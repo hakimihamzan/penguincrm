@@ -1,18 +1,16 @@
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
-import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-    },
-];
+import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
+import { Head, Link } from '@inertiajs/react';
+import { LogOut } from 'lucide-react';
 
 export default function Dashboard() {
+    const cleanup = useMobileNavigation();
+
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <>
+            <Link className="m-2 px-5 py-3 bg-blue-400 rounded-sm text-white" method="post" href={route('logout')} as="button" onClick={cleanup}>
+                Log out
+            </Link>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
@@ -30,6 +28,6 @@ export default function Dashboard() {
                     <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
                 </div>
             </div>
-        </AppLayout>
+        </>
     );
 }
