@@ -1,13 +1,15 @@
-import Layout from "@/layouts/app/app-layout"
+import Layout from '@/layouts/app/app-layout';
+import { Head } from '@inertiajs/react';
 
 function Setting() {
-  return (
-    <div>
-        Setting
-    </div>
-  )
+    return (
+        <>
+            <Head title="Setting" />
+            <div>Setting</div>
+        </>
+    );
 }
 
-Setting.layout = (page: React.ReactNode) => <Layout children={page} />
+Setting.layout = (page: React.ReactNode) => <Layout children={page} />;
 
-export default Setting
+export default Setting;

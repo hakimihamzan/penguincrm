@@ -1,13 +1,13 @@
-import Layout from "@/layouts/app/app-layout"
+import Layout from '@/layouts/app/app-layout';
+import { Head } from '@inertiajs/react';
 
 function Profile() {
-  return (
-    <Layout>
-        <div>
-            Profile
-        </div>
-    </Layout>
-  )
+    return (
+        <Layout>
+            <Head title="Profile" />
+            <div>Profile</div>
+        </Layout>
+    );
 }
 
-export default Profile
+export default Profile;

@@ -1,13 +1,15 @@
-import Layout from "@/layouts/app/app-layout"
+import Layout from '@/layouts/app/app-layout';
+import { Head } from '@inertiajs/react';
 
 function Contact() {
-  return (
-    <div>
-        Contact
-    </div>
-  )
+    return (
+        <>
+            <Head title="Contact" />
+            <div>Contact</div>
+        </>
+    );
 }
 
-Contact.layout = (page: React.ReactNode) => <Layout children={page} />
+Contact.layout = (page: React.ReactNode) => <Layout children={page} />;
 
-export default Contact
+export default Contact;
