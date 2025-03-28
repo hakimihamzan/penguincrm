@@ -9,7 +9,7 @@ function ProfileNavLink({ href, children }: { href: string; children: React.Reac
 
     return (
         <Link
-            className={`mb-2 block rounded px-4 py-2 transition-colors ${
+            className={`mb-2 mr-1 block border rounded px-4 py-2 transition-colors ${
                 isActive(href)
                     ? 'bg-gray-100 font-medium text-gray-900 dark:bg-gray-800 dark:text-gray-100'
                     : 'text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800/50'
@@ -44,7 +44,7 @@ function ProfileNavigation() {
     }, []); // Empty dependency array ensures this runs only once on mount
 
     return (
-        <div className="w-56 pr-2 border-r border-gray-200 dark:border-gray-700">
+        <div className="sm:flex mb-6 border-gray-200 dark:border-gray-700">
             <ProfileNavLink href="/profile/me">My Profile</ProfileNavLink>
             <ProfileNavLink href="/profile/password">My Password</ProfileNavLink>
             <ProfileNavLink href="/profile/appearance">My Appearance</ProfileNavLink>
@@ -57,11 +57,11 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
         <Layout>
             <Head title="Profile" />
             <div className="px-16 py-10">
-                <div className="mb-16">
+                <div className="mb-10">
                     <h1 className="text-lg font-bold">Profile</h1>
                     <p>Manage your profile.</p>
                 </div>
-                <div className="sm:m-0 sm:flex sm:gap-10">
+                <div>
                     <ProfileNavigation />
                     <div className="mt-10 sm:mt-0">{children}</div>
                 </div>
