@@ -1,4 +1,4 @@
-import { Building2, Command, Contact, User, UserPen } from 'lucide-react';
+import { Building2, Command, Contact, Loader2, User, UserPen } from 'lucide-react';
 import * as React from 'react';
 
 import { NavProjects } from '@/components/nav-projects';
@@ -37,6 +37,8 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const [isAudioLoading, setIsAudioLoading] = React.useState(true);
+
     return (
         <Sidebar className="top-(--header-height) h-[calc(100svh-var(--header-height))]!" {...props}>
             <SidebarHeader>
@@ -60,7 +62,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavProjects projects={data.projects} />
             </SidebarContent>
             <SidebarFooter>
-                <iframe width="100%" height={110} seamless src="https://player.simplecast.com/fd0bd2ba-c553-466c-a060-b144797ce369?dark=false" />
+                <div className="relative my-2 overflow-hidden rounded-sm shadow-sm">
+                    {isAudioLoading && (
+                        <div className="bg-muted absolute inset-0 flex items-center justify-center">
+                            <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+                        </div>
+                    )}
+                    <iframe
+                        width="100%"
+                        height={125}
+                        seamless
+                        src="https://player.simplecast.com/fd0bd2ba-c553-466c-a060-b144797ce369?dark=false"
+                        onLoad={() => setIsAudioLoading(false)}
+                        style={{ opacity: isAudioLoading ? 0 : 1, transition: 'opacity 0.3s' }}
+                    />
+                </div>
                 <NavUser user={data.user} />
             </SidebarFooter>
         </Sidebar>
