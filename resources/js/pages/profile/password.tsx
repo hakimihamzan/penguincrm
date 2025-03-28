@@ -3,9 +3,7 @@ import ProfileLayout from '@/layouts/app/profile-layout';
 function Password() {
     return (
         <ProfileLayout>
-            <div>
-                Password
-            </div>
+            <div>Password</div>
         </ProfileLayout>
     );
 }
