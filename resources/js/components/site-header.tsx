@@ -13,7 +13,11 @@ export function SiteHeader() {
     const { url: pathname } = usePage();
 
     const generateBreadcrumbs = () => {
-        const pathSegments = pathname.split('/').filter(Boolean);
+        // Remove query parameters and hash fragments from the pathname
+        const cleanPathname = pathname.split(/[?#]/)[0];
+
+        // Split the clean pathname into segments
+        const pathSegments = cleanPathname.split('/').filter(Boolean);
 
         return pathSegments.map((segment, index) => {
             // Create a URL up to this segment
