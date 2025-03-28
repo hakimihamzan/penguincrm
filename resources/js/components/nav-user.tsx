@@ -12,9 +12,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import { useInitials } from '@/hooks/use-initials';
+import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 
 export function NavUser() {
     const cleanup = useMobileNavigation();
