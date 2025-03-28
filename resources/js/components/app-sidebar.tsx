@@ -23,11 +23,6 @@ const data = {
             url: '/users',
             icon: User,
         },
-        {
-            name: 'Profile',
-            url: '/profile/me',
-            icon: UserPen,
-        },
     ],
 };
 
