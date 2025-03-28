@@ -27,9 +27,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
     });
 
-    Route::get('profile/me', function () {
-        return Inertia::render('profile');
-    })->name('profile.me');
+    Route::group(['prefix' => 'profile'], function () {
+        Route::get('/me', function () {
+            return Inertia::render('profile/index');
+        })->name('profile.me');
+
+        Route::get('/appearance', function () {
+            return Inertia::render('profile/appearance');
+        })->name('profile.appearance');
+
+        Route::get('/password', function () {
+            return Inertia::render('profile/password');
+        })->name('profile.password');
+    });
 });
 
 require __DIR__.'/auth.php';
