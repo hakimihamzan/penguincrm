@@ -68,7 +68,7 @@ function Password() {
                                         type={showCurrentPassword ? 'text' : 'password'}
                                         value={data.current_password}
                                         onChange={(e) => setData('current_password', e.target.value)}
-                                        className="pr-10 rounded"
+                                        className="rounded pr-10"
                                     />
                                     <Button
                                         type="button"
@@ -94,7 +94,7 @@ function Password() {
                                         type={showNewPassword ? 'text' : 'password'}
                                         value={data.password}
                                         onChange={(e) => setData('password', e.target.value)}
-                                        className="pr-10 rounded"
+                                        className="rounded pr-10"
                                     />
                                     <Button
                                         type="button"
@@ -123,7 +123,7 @@ function Password() {
                                         type={showConfirmPassword ? 'text' : 'password'}
                                         value={data.password_confirmation}
                                         onChange={(e) => setData('password_confirmation', e.target.value)}
-                                        className="pr-10 rounded"
+                                        className="rounded pr-10"
                                     />
                                     <Button
                                         type="button"

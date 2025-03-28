@@ -41,7 +41,7 @@ function ProfileNavigation() {
         if (storedState !== state) {
             toggleSidebar();
         }
-    }, []); // Empty dependency array ensures this runs only once on mount
+    }, [state, toggleSidebar]);
 
     return (
         <div className="mb-6 border-gray-200 sm:flex dark:border-gray-700">
