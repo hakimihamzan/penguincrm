@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,6 +42,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/password', function () {
             return Inertia::render('profile/password');
         })->name('profile.password');
+
+        Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
     });
 });
 
