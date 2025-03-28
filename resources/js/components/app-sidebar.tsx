@@ -7,11 +7,6 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { Link } from '@inertiajs/react';
 
 const data = {
-    user: {
-        name: 'shadcn',
-        email: 'm@example.com',
-        avatar: '/avatars/shadcn.jpg',
-    },
     projects: [
         {
             name: 'Contacts',
@@ -68,16 +63,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
                         </div>
                     )}
-                    <iframe
+                    {/* <iframe
                         width="100%"
                         height={125}
                         seamless
                         src="https://player.simplecast.com/fd0bd2ba-c553-466c-a060-b144797ce369?dark=false"
                         onLoad={() => setIsAudioLoading(false)}
                         style={{ opacity: isAudioLoading ? 0 : 1, transition: 'opacity 0.3s' }}
-                    />
+                    /> */}
                 </div>
-                <NavUser user={data.user} />
+                <NavUser />
             </SidebarFooter>
         </Sidebar>
     );
