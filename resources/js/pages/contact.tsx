@@ -85,7 +85,7 @@ function Contact({ contacts, pagination }: ContactProps) {
                         <Label htmlFor="rows-per-page" className="text-sm font-medium">
                             Rows per page
                         </Label>
-                        <Select value={`10`} onValueChange={(value) => {}}>
+                        <Select value={`10`} onValueChange={() => {}}>
                             <SelectTrigger className="w-20" id="rows-per-page">
                                 <SelectValue placeholder={'10'} />
                             </SelectTrigger>
