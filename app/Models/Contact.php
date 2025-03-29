@@ -11,6 +11,7 @@ class Contact extends Model
     use HasFactory;
 
     const STATUS_ACTIVE = 'active';
+
     const STATUS_INACTIVE = 'inactive';
 
     const STATUSES = [

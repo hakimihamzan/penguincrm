@@ -1,5 +1,5 @@
 import Layout from '@/layouts/app/app-layout';
-import { Head, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 
 type Contact = {
     id: number;
@@ -13,12 +13,12 @@ type Contact = {
     notes?: string;
     status: 'active' | 'inactive';
     avatar?: string;
-}
+};
 
 type ContactProps = {
     contacts: {
         data: Contact[];
-    }
+    };
     filters: {
         name?: string;
         email?: string;
@@ -35,11 +35,8 @@ type ContactProps = {
     };
 };
 
-function Contact({contacts, filters, pagination}: ContactProps) {
-    let contactList = contacts.data;
-
-    let pagesss = usePage();
-    console.log(pagesss, contacts, filters, pagination);
+function Contact({ contacts }: ContactProps) {
+    const contactList = contacts.data;
 
     return (
         <>
@@ -47,13 +44,15 @@ function Contact({contacts, filters, pagination}: ContactProps) {
             <div>Contact</div>
             {/* list of contact */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {contactList.map(contact => (
-                    <div key={contact.id} className="p-4 border rounded">
-                        <img src={contact.avatar} alt={contact.name} className="w-16 h-16 rounded-full" />
+                {contactList.map((contact) => (
+                    <div key={contact.id} className="rounded border p-4">
+                        <img src={contact.avatar} alt={contact.name} className="h-16 w-16 rounded-full" />
                         <h2 className="text-lg font-bold">{contact.name}</h2>
                         <p>{contact.email}</p>
                         <p>{contact.phone}</p>
-                        <p>{contact.city}, {contact.country}</p>
+                        <p>
+                            {contact.city}, {contact.country}
+                        </p>
                         <p>{contact.company}</p>
                         <p>{contact.job_title}</p>
                         <p>{contact.notes}</p>

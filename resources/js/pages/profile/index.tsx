@@ -15,7 +15,7 @@ function Profile() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [preview, setPreview] = useState<string | null>(null);
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         name: user.name || '',
         email: user.email || '',
         photo: null as File | null, // TODO impplement file upload
