@@ -26,10 +26,11 @@ class ContactIndexRequest extends FormRequest
     {
         return [
             'name' => ['nullable', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:255'],
             'status' => ['nullable', 'string', Rule::in(Contact::STATUSES)],
-            'sort_by' => ['nullable', 'string', Rule::in(['name', 'email', 'phone', 'status'])],
+            'sort_by' => ['nullable', 'string', Rule::in(['id', 'name', 'email', 'phone', 'status'])],
             'sort_order' => ['nullable', 'string', Rule::in(['asc', 'desc'])],
             'per_page' => ['nullable', 'integer', 'min:1'],
             'page' => ['nullable', 'integer', 'min:1'],

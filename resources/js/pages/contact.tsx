@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Layout from '@/layouts/app/app-layout';
 import { Head, router } from '@inertiajs/react';
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon } from 'lucide-react';
+import { useState } from 'react';
 
 type Contact = {
     id: number;
@@ -39,8 +40,13 @@ type ContactProps = {
     };
 };
 
-function Contact({ contacts, pagination }: ContactProps) {
+type SortDirection = 'asc' | 'desc';
+
+function Contact({ contacts, pagination, filters }: ContactProps) {
     const contactList = contacts.data;
+
+    const [sortBy, setSortBy] = useState<string>(filters.sort_by || '');
+    const [sortOrder, setSortOrder] = useState<SortDirection>((filters.sort_order as SortDirection) || 'asc');
 
     /**
      *  @ kimi_rant
@@ -59,6 +65,8 @@ function Contact({ contacts, pagination }: ContactProps) {
         router.get(
             route('contacts.index'),
             {
+                sort_by: sortBy,
+                sort_order: sortOrder,
                 page: newPage,
                 per_page: pagination.per_page,
             },
@@ -69,6 +77,40 @@ function Contact({ contacts, pagination }: ContactProps) {
             },
         );
     }
+
+    const handleSort = (column: string) => {
+        let newOrder: SortDirection = 'asc';
+
+        // If already sorting by this column, toggle direction
+        if (sortBy === column) {
+            newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+        }
+
+        setSortBy(column);
+        setSortOrder(newOrder);
+
+        router.get(
+            route('contacts.index'),
+            {
+                page: pagination.current_page,
+                per_page: pagination.per_page,
+                sort_by: column,
+                sort_order: newOrder,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                only: ['contacts', 'pagination'],
+            },
+        );
+    };
+
+    // Helper to render sort indicator
+    const renderSortIndicator = (column: string) => {
+        if (sortBy !== column) return null;
+
+        return sortOrder === 'asc' ? <ChevronUpIcon className="ml-2 h-4 w-4" /> : <ChevronDownIcon className="ml-2 h-4 w-4" />;
+    };
 
     return (
         <>
@@ -81,11 +123,33 @@ function Contact({ contacts, pagination }: ContactProps) {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>#</TableHead>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Phone</TableHead>
-                            <TableHead>Email</TableHead>
-                            <TableHead>Is Active</TableHead>
+                            <TableHead className="cursor-pointer" onClick={() => handleSort('id')}>
+                                <div className="flex items-center">#{renderSortIndicator('id')}</div>
+                            </TableHead>
+                            <TableHead className="cursor-pointer" onClick={() => handleSort('name')}>
+                                <div className="flex items-center">
+                                    Name
+                                    {renderSortIndicator('name')}
+                                </div>
+                            </TableHead>
+                            <TableHead className="cursor-pointer" onClick={() => handleSort('phone')}>
+                                <div className="flex items-center">
+                                    Phone
+                                    {renderSortIndicator('phone')}
+                                </div>
+                            </TableHead>
+                            <TableHead className="cursor-pointer" onClick={() => handleSort('email')}>
+                                <div className="flex items-center">
+                                    Email
+                                    {renderSortIndicator('email')}
+                                </div>
+                            </TableHead>
+                            <TableHead className="cursor-pointer" onClick={() => handleSort('status')}>
+                                <div className="flex items-center">
+                                    Is Active
+                                    {renderSortIndicator('status')}
+                                </div>
+                            </TableHead>
                             <TableHead>Action</TableHead>
                         </TableRow>
                     </TableHeader>
