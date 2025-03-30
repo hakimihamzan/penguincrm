@@ -25,10 +25,7 @@ class ContactIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['nullable', 'string', 'max:255'],
-            'name' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:255'],
+            'search' => ['nullable', 'string'],
             'status' => ['nullable', 'string', Rule::in(Contact::STATUSES)],
             'sort_by' => ['nullable', 'string', Rule::in(['id', 'name', 'email', 'phone', 'status'])],
             'sort_order' => ['nullable', 'string', Rule::in(['asc', 'desc'])],

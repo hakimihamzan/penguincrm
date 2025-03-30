@@ -24,14 +24,10 @@ class ContactController extends Controller
 
         $contacts = Contact::query()
             // filtering
-            ->when($validated['name'], function ($query, $name) {
-                return $query->where('name', 'like', "%{$name}%");
-            })
-            ->when($validated['email'], function ($query, $email) {
-                return $query->where('email', 'like', "%{$email}%");
-            })
-            ->when($validated['phone'], function ($query, $phone) {
-                return $query->where('phone', 'like', "%{$phone}%");
+            ->when($validated['search'], function ($query, $name) {
+                return $query->where('name', 'like', "%{$name}%")
+                    ->orWhere('email', 'like', "%{$name}%")
+                    ->orWhere('phone', 'like', "%{$name}%");
             })
             ->when($validated['status'], function ($query, $status) {
                 return $query->where('status', $status);

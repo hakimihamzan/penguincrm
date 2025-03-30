@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Layout from '@/layouts/app/app-layout';
 import { Head, router } from '@inertiajs/react';
@@ -44,6 +45,8 @@ type SortDirection = 'asc' | 'desc';
 
 function Contact({ contacts, pagination, filters }: ContactProps) {
     const contactList = contacts.data;
+
+    const [search, setSearch] = useState<string>('');
 
     const [sortBy, setSortBy] = useState<string>(filters.sort_by || '');
     const [sortOrder, setSortOrder] = useState<SortDirection>((filters.sort_order as SortDirection) || 'asc');
@@ -116,10 +119,43 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
         <>
             <Head title="Contact" />
             <div className="w-full overflow-x-auto px-4 py-10 md:px-8 lg:px-16">
-                <div className="mb-10">
+                <div className="mb-16">
                     <h1 className="text-lg font-bold">Contact</h1>
                     <p>You can manage all your contacts here.</p>
                 </div>
+
+                {/* Filter */}
+                <div className="mb-6 flex max-w-md items-center gap-2">
+                    <Input
+                        type="text"
+                        placeholder="Search by name, email or phone"
+                        value={search}
+                        onChange={(e) => {
+                            const newSearchValue = e.target.value;
+                            setSearch(newSearchValue);
+
+                            // Only trigger search if string is empty or has at least 3 chars
+                            if (newSearchValue.length > 2 || newSearchValue.length === 0) {
+                                router.get(
+                                    route('contacts.index'),
+                                    {
+                                        page: 1,
+                                        per_page: pagination.per_page,
+                                        sort_by: sortBy,
+                                        sort_order: sortOrder,
+                                        search: newSearchValue,
+                                    },
+                                    {
+                                        preserveState: true,
+                                        preserveScroll: true,
+                                        only: ['contacts', 'pagination'],
+                                    },
+                                );
+                            }
+                        }}
+                    />
+                </div>
+
                 <Table>
                     <TableHeader>
                         <TableRow>
