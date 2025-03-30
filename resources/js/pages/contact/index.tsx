@@ -23,9 +23,7 @@ type Contact = {
 };
 
 type ContactProps = {
-    contacts: {
-        data: Contact[];
-    };
+    contacts: Contact[];
     filters: {
         name?: string;
         email?: string;
@@ -45,8 +43,6 @@ type ContactProps = {
 type SortDirection = 'asc' | 'desc';
 
 function Contact({ contacts, pagination, filters }: ContactProps) {
-    const contactList = contacts.data;
-
     const [search, setSearch] = useState<string>('');
 
     const [sortBy, setSortBy] = useState<string>(filters.sort_by || '');
@@ -169,7 +165,7 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                     </div>
                 </div>
 
-                {contactList.length > 0 ? (
+                {contacts.length > 0 ? (
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -204,7 +200,7 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {contactList.map((contact) => (
+                            {contacts.map((contact) => (
                                 <TableRow key={contact.id}>
                                     <TableCell>{contact.id}</TableCell>
                                     <TableCell>{contact.name}</TableCell>

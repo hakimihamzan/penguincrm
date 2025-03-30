@@ -44,7 +44,9 @@ class ContactController extends Controller
             ->withQueryString();
 
         return Inertia::render('contact/index', [
-            'contacts' => ContactResource::collection($contacts->items()),
+            'contacts' => $contacts->through(function ($contact) {
+                return (new ContactResource($contact))->toArray(request());
+            })->values()->all(),
             'filters' => [
                 'name' => $validated['name'] ?? null,
                 'email' => $validated['email'] ?? null,
@@ -99,7 +101,7 @@ class ContactController extends Controller
     public function edit(Contact $contact): Response
     {
         return Inertia::render('contact/edit', [
-            'contact' => new ContactResource($contact),
+            'contact' => (new ContactResource($contact))->toArray(request()),
         ]);
     }
 

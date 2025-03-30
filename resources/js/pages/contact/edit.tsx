@@ -11,46 +11,38 @@ import { FormEvent } from 'react';
 import { toast } from 'sonner';
 
 interface Contact {
-    data: {
-        id: number;
-        name: string;
-        email: string;
-        phone?: string;
-        city?: string;
-        country?: string;
-        company?: string;
-        job_title?: string;
-        notes?: string;
-        status: 'active' | 'inactive';
-        avatar?: string;
-    };
+    id: number;
+    name: string;
+    email: string;
+    phone?: string;
+    city?: string;
+    country?: string;
+    company?: string;
+    job_title?: string;
+    notes?: string;
+    status: 'active' | 'inactive';
+    avatar?: string;
 }
 
-interface EditContactProps {
-    contact: Contact;
-}
-
-export default function EditContact({ contact }: EditContactProps) {
-    const contactData = contact.data;
-
+export default function EditContact({ contact }: { contact: Contact }) {
     // Use Inertia's useForm for form handling
     const { data, setData, put, processing, errors } = useForm({
-        name: contactData.name || '',
-        email: contactData.email || '',
-        phone: contactData.phone || '',
-        city: contactData.city || '',
-        country: contactData.country || '',
-        company: contactData.company || '',
-        job_title: contactData.job_title || '',
-        notes: contactData.notes || '',
-        status: contactData.status || 'active',
-        avatar: contactData.avatar || '',
+        name: contact.name || '',
+        email: contact.email || '',
+        phone: contact.phone || '',
+        city: contact.city || '',
+        country: contact.country || '',
+        company: contact.company || '',
+        job_title: contact.job_title || '',
+        notes: contact.notes || '',
+        status: contact.status || 'active',
+        avatar: contact.avatar || '',
     });
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        put(route('contacts.update', contactData.id), {
+        put(route('contacts.update', contact.id), {
             preserveScroll: true,
             onSuccess: () => {
                 toast.success('Contact updated successfully');
@@ -63,7 +55,7 @@ export default function EditContact({ contact }: EditContactProps) {
 
     return (
         <>
-            <Head title={`Edit Contact: ${contactData.name}`} />
+            <Head title={`Edit Contact: ${contact.name}`} />
             <div className="mx-auto px-4 py-8 md:w-2xl md:px-6 lg:px-8">
                 <div className="mb-8 flex items-center">
                     <Button variant="ghost" size="icon" className="mr-4" onClick={() => router.visit(route('contacts.index'))}>
@@ -72,7 +64,7 @@ export default function EditContact({ contact }: EditContactProps) {
                     </Button>
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">Edit Contact</h1>
-                        <p className="text-muted-foreground">Update contact information for {contactData.name}</p>
+                        <p className="text-muted-foreground">Update contact information for {contact.name}</p>
                     </div>
                 </div>
 
