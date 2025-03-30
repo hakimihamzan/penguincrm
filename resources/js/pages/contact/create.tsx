@@ -39,7 +39,7 @@ export default function CreateContact() {
     return (
         <>
             <Head title="Create Contact" />
-            <div className="mx-auto md:w-2xl w-full px-4 py-8 md:px-6 lg:px-8">
+            <div className="mx-auto w-full px-4 py-8 md:w-2xl md:px-6 lg:px-8">
                 <div className="mb-8 flex items-center">
                     <Button variant="ghost" size="icon" className="mr-4" onClick={() => router.visit(route('contacts.index'))}>
                         <ArrowLeftIcon className="h-4 w-4" />

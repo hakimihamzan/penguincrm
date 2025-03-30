@@ -64,7 +64,7 @@ export default function EditContact({ contact }: EditContactProps) {
     return (
         <>
             <Head title={`Edit Contact: ${contactData.name}`} />
-            <div className="mx-auto md:w-2xl px-4 py-8 md:px-6 lg:px-8">
+            <div className="mx-auto px-4 py-8 md:w-2xl md:px-6 lg:px-8">
                 <div className="mb-8 flex items-center">
                     <Button variant="ghost" size="icon" className="mr-4" onClick={() => router.visit(route('contacts.index'))}>
                         <ArrowLeftIcon className="h-4 w-4" />
@@ -84,7 +84,7 @@ export default function EditContact({ contact }: EditContactProps) {
                     <form onSubmit={handleSubmit}>
                         <CardContent className="space-y-6">
                             {/* Primary Info Section */}
-                            <div className="space-y-4 mb-10">
+                            <div className="mb-10 space-y-4">
                                 <h3 className="text-lg font-medium">Basic Details</h3>
                                 <div className="grid gap-4 md:grid-cols-2">
                                     <div className="space-y-2">
@@ -138,7 +138,7 @@ export default function EditContact({ contact }: EditContactProps) {
                             </div>
 
                             {/* Address Section */}
-                            <div className="space-y-4 pt-2 mb-10">
+                            <div className="mb-10 space-y-4 pt-2">
                                 <h3 className="text-lg font-medium">Address</h3>
                                 <div className="grid gap-4 md:grid-cols-2">
                                     <div className="space-y-2">
@@ -161,7 +161,7 @@ export default function EditContact({ contact }: EditContactProps) {
                             </div>
 
                             {/* Company Section */}
-                            <div className="space-y-4 pt-2 mb-10">
+                            <div className="mb-10 space-y-4 pt-2">
                                 <h3 className="text-lg font-medium">Company Details</h3>
                                 <div className="grid gap-4 md:grid-cols-2">
                                     <div className="space-y-2">
@@ -189,7 +189,7 @@ export default function EditContact({ contact }: EditContactProps) {
                             </div>
 
                             {/* Notes Section */}
-                            <div className="space-y-4 pt-2 mb-10">
+                            <div className="mb-10 space-y-4 pt-2">
                                 <h3 className="text-lg font-medium">Additional Information</h3>
                                 <div className="space-y-2">
                                     <Label htmlFor="notes">Notes</Label>

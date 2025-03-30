@@ -200,7 +200,7 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                                         {renderSortIndicator('status')}
                                     </div>
                                 </TableHead>
-                                <TableHead className="text-right w-[70px]">Action</TableHead>
+                                <TableHead className="w-[70px] text-right">Action</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -223,7 +223,7 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="h-8 w-8 cursor-pointer hover:bg-muted/100"
+                                                className="hover:bg-muted/100 h-8 w-8 cursor-pointer"
                                                 onClick={() => router.visit(route('contacts.edit', contact.id))}
                                             >
                                                 <PencilIcon className="h-4 w-4" />
@@ -232,7 +232,7 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="cursor-pointer h-8 w-8 text-destructive hover:bg-destructive/10"
+                                                className="text-destructive hover:bg-destructive/10 h-8 w-8 cursor-pointer"
                                                 onClick={() => {
                                                     if (confirm(`Are you sure you want to delete ${contact.name}?`)) {
                                                         router.delete(route('contacts.destroy', contact.id), {
