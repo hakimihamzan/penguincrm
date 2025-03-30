@@ -4,8 +4,9 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Layout from '@/layouts/app/app-layout';
 import { Head, router } from '@inertiajs/react';
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon, PlusIcon, UserIcon } from 'lucide-react';
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon, PencilIcon, PlusIcon, TrashIcon, UserIcon } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 type Contact = {
     id: number;
@@ -199,7 +200,7 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                                         {renderSortIndicator('status')}
                                     </div>
                                 </TableHead>
-                                <TableHead>Action</TableHead>
+                                <TableHead className="text-right w-[70px]">Action</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -217,7 +218,39 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                                             {contact.status === 'active' ? 'Yes' : 'No'}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell>TODO</TableCell>
+                                    <TableCell className="text-right">
+                                        <div className="flex justify-end">
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-8 w-8 cursor-pointer hover:bg-muted/100"
+                                                onClick={() => router.visit(route('contacts.edit', contact.id))}
+                                            >
+                                                <PencilIcon className="h-4 w-4" />
+                                                <span className="sr-only">Edit contact</span>
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="cursor-pointer h-8 w-8 text-destructive hover:bg-destructive/10"
+                                                onClick={() => {
+                                                    if (confirm(`Are you sure you want to delete ${contact.name}?`)) {
+                                                        router.delete(route('contacts.destroy', contact.id), {
+                                                            preserveScroll: true,
+                                                            preserveState: true,
+                                                            only: ['contacts', 'pagination'],
+                                                            onSuccess: () => {
+                                                                toast.success('Contact deleted successfully');
+                                                            },
+                                                        });
+                                                    }
+                                                }}
+                                            >
+                                                <TrashIcon className="h-4 w-4" />
+                                                <span className="sr-only">Delete contact</span>
+                                            </Button>
+                                        </div>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
