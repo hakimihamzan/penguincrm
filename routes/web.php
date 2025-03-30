@@ -18,6 +18,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::group(['prefix' => 'contacts'], function () {
         Route::get('/', [ContactController::class, 'index'])->name('contacts.index');
+        Route::get('/edit/{contact}', [ContactController::class, 'edit'])->name('contacts.edit');
+        Route::put('/{contact}', [ContactController::class, 'update'])->name('contacts.update');
+        Route::get('/create', [ContactController::class, 'create'])->name('contacts.create');
+        Route::post('/', [ContactController::class, 'store'])->name('contacts.store');
+        Route::delete('/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
     });
 
     Route::group(['prefix' => 'organizations'], function () {
