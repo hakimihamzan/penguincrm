@@ -178,7 +178,7 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                     <div className="ml-auto flex items-center gap-2 lg:ml-0">
                         <Button
                             variant="outline"
-                            className="size-8"
+                            className="size-8 cursor-pointer"
                             size="icon"
                             onClick={() => handlePageChange(pagination.current_page - 1)}
                             disabled={!pagination.current_page || pagination.current_page === 1}
@@ -188,7 +188,7 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                         </Button>
                         <Button
                             variant="outline"
-                            className="size-8"
+                            className="size-8 cursor-pointer"
                             size="icon"
                             onClick={() => handlePageChange(pagination.current_page + 1)}
                             disabled={!pagination.current_page || pagination.current_page === pagination.last_page}
