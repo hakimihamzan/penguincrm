@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Layout from '@/layouts/app/app-layout';
 import { Head, router } from '@inertiajs/react';
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon } from 'lucide-react';
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon, PlusIcon, UserIcon } from 'lucide-react';
 import { useState } from 'react';
 
 type Contact = {
@@ -156,56 +156,77 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                     />
                 </div>
 
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="cursor-pointer" onClick={() => handleSort('id')}>
-                                <div className="flex items-center">#{renderSortIndicator('id')}</div>
-                            </TableHead>
-                            <TableHead className="cursor-pointer" onClick={() => handleSort('name')}>
-                                <div className="flex items-center">
-                                    Name
-                                    {renderSortIndicator('name')}
-                                </div>
-                            </TableHead>
-                            <TableHead className="cursor-pointer" onClick={() => handleSort('phone')}>
-                                <div className="flex items-center">
-                                    Phone
-                                    {renderSortIndicator('phone')}
-                                </div>
-                            </TableHead>
-                            <TableHead className="cursor-pointer" onClick={() => handleSort('email')}>
-                                <div className="flex items-center">
-                                    Email
-                                    {renderSortIndicator('email')}
-                                </div>
-                            </TableHead>
-                            <TableHead className="cursor-pointer" onClick={() => handleSort('status')}>
-                                <div className="flex items-center">
-                                    Is Active
-                                    {renderSortIndicator('status')}
-                                </div>
-                            </TableHead>
-                            <TableHead>Action</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody className="">
-                        {contactList.map((contact) => (
-                            <TableRow key={contact.id}>
-                                <TableCell>{contact.id}</TableCell>
-                                <TableCell>{contact.name}</TableCell>
-                                <TableCell>{contact.phone}</TableCell>
-                                <TableCell>{contact.email}</TableCell>
-                                <TableCell>
-                                    <Badge variant={'outline'} className={''}>
-                                        {contact.status === 'active' ? 'Yes' : 'No'}
-                                    </Badge>
-                                </TableCell>
-                                <TableCell>TODO</TableCell>
+                {contactList.length > 0 ? (
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="cursor-pointer" onClick={() => handleSort('id')}>
+                                    <div className="flex items-center">#{renderSortIndicator('id')}</div>
+                                </TableHead>
+                                <TableHead className="cursor-pointer" onClick={() => handleSort('name')}>
+                                    <div className="flex items-center">
+                                        Name
+                                        {renderSortIndicator('name')}
+                                    </div>
+                                </TableHead>
+                                <TableHead className="cursor-pointer" onClick={() => handleSort('phone')}>
+                                    <div className="flex items-center">
+                                        Phone
+                                        {renderSortIndicator('phone')}
+                                    </div>
+                                </TableHead>
+                                <TableHead className="cursor-pointer" onClick={() => handleSort('email')}>
+                                    <div className="flex items-center">
+                                        Email
+                                        {renderSortIndicator('email')}
+                                    </div>
+                                </TableHead>
+                                <TableHead className="cursor-pointer" onClick={() => handleSort('status')}>
+                                    <div className="flex items-center">
+                                        Is Active
+                                        {renderSortIndicator('status')}
+                                    </div>
+                                </TableHead>
+                                <TableHead>Action</TableHead>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                        </TableHeader>
+                        <TableBody>
+                            {contactList.map((contact) => (
+                                <TableRow key={contact.id}>
+                                    <TableCell>{contact.id}</TableCell>
+                                    <TableCell>{contact.name}</TableCell>
+                                    <TableCell>{contact.phone}</TableCell>
+                                    <TableCell>{contact.email}</TableCell>
+                                    <TableCell>
+                                        <Badge
+                                            variant={'outline'}
+                                            className={contact.status === 'active' ? 'border-green-200 bg-green-50 text-green-700' : ''}
+                                        >
+                                            {contact.status === 'active' ? 'Yes' : 'No'}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>TODO</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                ) : (
+                    <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
+                        <div className="mb-4 rounded-full bg-gray-100 p-3 dark:bg-gray-800">
+                            <UserIcon className="h-6 w-6 text-gray-500 dark:text-gray-400" />
+                        </div>
+                        <h3 className="mb-1 text-lg font-medium">No contacts found</h3>
+                        <p className="mb-4 max-w-md text-sm text-gray-500 dark:text-gray-400">
+                            {search
+                                ? `No contacts matching "${search}"`
+                                : "You don't have any contacts yet. Create your first contact to get started."}
+                        </p>
+                        <Button onClick={() => router.visit(route('contacts.create'))}>
+                            <PlusIcon className="mr-2 h-4 w-4" />
+                            Add Contact
+                        </Button>
+                    </div>
+                )}
 
                 <div className="mt-6 flex items-center justify-between px-4">
                     <div className="flex w-fit items-center justify-center text-sm font-medium">
