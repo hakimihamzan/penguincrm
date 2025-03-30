@@ -1,11 +1,9 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Layout from '@/layouts/app/app-layout';
-import { Head } from '@inertiajs/react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@radix-ui/react-select';
-import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon } from 'lucide-react';
+import { Head, router } from '@inertiajs/react';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 
 type Contact = {
     id: number;
@@ -44,6 +42,34 @@ type ContactProps = {
 function Contact({ contacts, pagination }: ContactProps) {
     const contactList = contacts.data;
 
+    /**
+     *  @ kimi_rant
+     *
+     * At least 2 ways to handle pagination in Inertia.js, either by using the router.get or <Link> component.
+     * The benefit of using the router.get is that to better control the flow of the application or for more complex scenarios,
+     * the <Link> component is more suitable for simple navigation between pages, but <Link> can use prefetch which is awesome.
+     *
+     *
+     * @param newPage
+     * @returns void
+     */
+    function handlePageChange(newPage: number) {
+        if (newPage < 1 || newPage > pagination.last_page) return;
+
+        router.get(
+            route('contacts.index'),
+            {
+                page: newPage,
+                per_page: pagination.per_page,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                only: ['contacts', 'pagination'],
+            },
+        );
+    }
+
     return (
         <>
             <Head title="Contact" />
@@ -80,43 +106,18 @@ function Contact({ contacts, pagination }: ContactProps) {
                         ))}
                     </TableBody>
                 </Table>
-                <div className="mt-6 flex w-full items-center justify-between gap-8 px-4">
-                    <div className="hidden items-center gap-2 lg:flex">
-                        <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                            Rows per page
-                        </Label>
-                        <Select value={`10`} onValueChange={() => {}}>
-                            <SelectTrigger className="w-20" id="rows-per-page">
-                                <SelectValue placeholder={'10'} />
-                            </SelectTrigger>
-                            <SelectContent side="top">
-                                {[10, 20, 30, 40, 50].map((pageSize) => (
-                                    <SelectItem key={pageSize} value={`${pageSize}`}>
-                                        {pageSize}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
+
+                <div className="mt-6 flex items-center justify-between px-4">
                     <div className="flex w-fit items-center justify-center text-sm font-medium">
                         Page {pagination.current_page} of {pagination.last_page}
                     </div>
                     <div className="ml-auto flex items-center gap-2 lg:ml-0">
                         <Button
                             variant="outline"
-                            className="hidden h-8 w-8 p-0 lg:flex"
-                            // onClick={}
-                            // disabled={}
-                        >
-                            <span className="sr-only">Go to first page</span>
-                            <ChevronsLeftIcon />
-                        </Button>
-                        <Button
-                            variant="outline"
                             className="size-8"
                             size="icon"
-                            // onClick={}
-                            // disabled={}
+                            onClick={() => handlePageChange(pagination.current_page - 1)}
+                            disabled={!pagination.current_page || pagination.current_page === 1}
                         >
                             <span className="sr-only">Go to previous page</span>
                             <ChevronLeftIcon />
@@ -125,21 +126,11 @@ function Contact({ contacts, pagination }: ContactProps) {
                             variant="outline"
                             className="size-8"
                             size="icon"
-                            // onClick={}
-                            // disabled={}
+                            onClick={() => handlePageChange(pagination.current_page + 1)}
+                            disabled={!pagination.current_page || pagination.current_page === pagination.last_page}
                         >
                             <span className="sr-only">Go to next page</span>
                             <ChevronRightIcon />
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="hidden size-8 lg:flex"
-                            size="icon"
-                            // onClick={}
-                            // disabled={}
-                        >
-                            <span className="sr-only">Go to last page</span>
-                            <ChevronsRightIcon />
                         </Button>
                     </div>
                 </div>
