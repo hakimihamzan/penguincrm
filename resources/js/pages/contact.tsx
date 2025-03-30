@@ -124,36 +124,48 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                     <p>You can manage all your contacts here.</p>
                 </div>
 
-                {/* Filter */}
-                <div className="mb-6 flex max-w-md items-center gap-2">
-                    <Input
-                        type="text"
-                        placeholder="Search by name, email or phone"
-                        value={search}
-                        onChange={(e) => {
-                            const newSearchValue = e.target.value;
-                            setSearch(newSearchValue);
+                <div className="mb-6 flex items-center justify-between">
+                    <div className="w-[400px]">
+                        <Input
+                            type="text"
+                            placeholder="Search by name, email or phone"
+                            value={search}
+                            onChange={(e) => {
+                                const newSearchValue = e.target.value;
+                                setSearch(newSearchValue);
 
-                            // Only trigger search if string is empty or has at least 3 chars
-                            if (newSearchValue.length > 2 || newSearchValue.length === 0) {
-                                router.get(
-                                    route('contacts.index'),
-                                    {
-                                        page: 1,
-                                        per_page: pagination.per_page,
-                                        sort_by: sortBy,
-                                        sort_order: sortOrder,
-                                        search: newSearchValue,
-                                    },
-                                    {
-                                        preserveState: true,
-                                        preserveScroll: true,
-                                        only: ['contacts', 'pagination'],
-                                    },
-                                );
-                            }
-                        }}
-                    />
+                                // Only trigger search if string is empty or has at least 3 chars
+                                if (newSearchValue.length > 2 || newSearchValue.length === 0) {
+                                    router.get(
+                                        route('contacts.index'),
+                                        {
+                                            page: 1,
+                                            per_page: pagination.per_page,
+                                            sort_by: sortBy,
+                                            sort_order: sortOrder,
+                                            search: newSearchValue,
+                                        },
+                                        {
+                                            preserveState: true,
+                                            preserveScroll: true,
+                                            only: ['contacts', 'pagination'],
+                                        },
+                                    );
+                                }
+                            }}
+                        />
+                    </div>
+                    <div className="">
+                        <Button
+                            variant="outline"
+                            className="size-8 cursor-pointer"
+                            size="icon"
+                            onClick={() => router.visit(route('contacts.create'))}
+                        >
+                            <span className="sr-only">Create new contact</span>
+                            <PlusIcon />
+                        </Button>
+                    </div>
                 </div>
 
                 {contactList.length > 0 ? (
