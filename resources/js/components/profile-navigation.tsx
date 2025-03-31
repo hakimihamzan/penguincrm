@@ -28,27 +28,3 @@ export function ProfileNavigation() {
         </div>
     );
 }
-
-/**
- * @ kimi_rant
- *
- * This is the correct way to do peristent layout in Inertia.js.
- * If you are using doing normal React way of layout, when navigating to other page,
- * the layout will be destroyed and re-rendered.
- *
- * REACT STYLE LAYOUT
- * <Layout>{page}</Layout>
- *
- * instead of
- *
- * INERTIA PERSISTENT LAYOUT
- * Dashboard.layout = (page: React.ReactNode) => <Layout children={page} />;
- *
- *
- * To test this out, convert the layout to be react style layout, enter something into the right top
- * searchbar, then navigate to other page. You will see the input is reset and re-rendered again.
- * But if you go to other pages that uses persistent layout, the input will stay the same.
- *
- * For more info: https://inertiajs.com/pages#persistent-layouts
- *
- */
