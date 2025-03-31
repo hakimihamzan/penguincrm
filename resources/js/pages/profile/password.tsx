@@ -50,7 +50,7 @@ export default function Password() {
 
     return (
         <>
-            <Head title="Update Password" />
+            <Head title="Password" />
             <Card className="w-full max-w-2xl rounded">
                 <CardHeader>
                     <CardTitle>Update Password</CardTitle>

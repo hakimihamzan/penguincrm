@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useInitials } from '@/hooks/use-initials';
 import Layout from '@/layouts/app/app-layout';
 import { SharedData } from '@/types';
-import { useForm, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEvent, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -57,6 +57,8 @@ export default function Profile() {
 
     return (
         <>
+            <Head title="Profile" />
+
             <Card className="w-full max-w-2xl rounded">
                 <CardHeader>
                     <CardTitle>Personal Information</CardTitle>

@@ -7,7 +7,7 @@ import { Head } from '@inertiajs/react';
 export default function Appearance() {
     return (
         <>
-            <Head title="Profile" />
+            <Head title="Appearance" />
 
             <Card className="w-full max-w-2xl rounded">
                 <CardHeader>
