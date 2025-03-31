@@ -1,16 +1,17 @@
+import { ProfileNavigation } from '@/components/profile-navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useInitials } from '@/hooks/use-initials';
-import ProfileLayout from '@/layouts/app/profile-layout';
+import Layout from '@/layouts/app/app-layout';
 import { SharedData } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
 import { FormEvent, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-function Profile() {
+export default function Profile() {
     const user = usePage<SharedData>().props.auth.user;
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [preview, setPreview] = useState<string | null>(null);
@@ -55,7 +56,7 @@ function Profile() {
     const getInitials = useInitials();
 
     return (
-        <ProfileLayout>
+        <>
             <Card className="w-full max-w-2xl rounded">
                 <CardHeader>
                     <CardTitle>Personal Information</CardTitle>
@@ -110,8 +111,21 @@ function Profile() {
                     </form>
                 </CardContent>
             </Card>
-        </ProfileLayout>
+        </>
     );
 }
 
-export default Profile;
+Profile.layout = (page: React.ReactNode) => (
+    <Layout>
+        <div className="px-16 py-10">
+            <div className="mb-10">
+                <h1 className="text-lg font-bold">Profile</h1>
+                <p>Manage your profile.</p>
+            </div>
+            <div>
+                <ProfileNavigation />
+                <div className="mt-10 sm:mt-0">{page}</div>
+            </div>
+        </div>
+    </Layout>
+);

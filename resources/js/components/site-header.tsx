@@ -6,11 +6,21 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useSidebar } from '@/components/ui/sidebar';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export function SiteHeader() {
-    const { toggleSidebar } = useSidebar();
+    const { toggleSidebar, state } = useSidebar();
     const { url: pathname } = usePage();
+
+    useEffect(() => {
+        // Check localStorage and sync sidebar state on component mount
+        const storedState = localStorage.getItem('sidebar') ?? 'expanded';
+
+        // Only toggle if current state differs from stored state
+        if (storedState !== state) {
+            toggleSidebar();
+        }
+    }, [state, toggleSidebar]);
 
     const generateBreadcrumbs = () => {
         // Remove query parameters and hash fragments from the pathname
@@ -47,7 +57,7 @@ export function SiteHeader() {
     return (
         <header className="bg-background sticky top-0 z-50 flex w-full items-center border-b">
             <div className="flex h-(--header-height) w-full items-center gap-2 px-4">
-                <Button className="h-8 w-8" variant="ghost" size="icon" onClick={toggleSidebar}>
+                <Button className="h-8 w-8 cursor-pointer" variant="ghost" size="icon" onClick={toggleSidebar}>
                     <SidebarIcon />
                 </Button>
                 <Separator orientation="vertical" className="mr-2 h-4" />

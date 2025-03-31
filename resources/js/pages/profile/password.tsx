@@ -1,14 +1,15 @@
+import { ProfileNavigation } from '@/components/profile-navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import ProfileLayout from '@/layouts/app/profile-layout';
+import Layout from '@/layouts/app/app-layout';
 import { Head, useForm } from '@inertiajs/react';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { FormEvent, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-function Password() {
+export default function Password() {
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
 
@@ -48,7 +49,7 @@ function Password() {
     };
 
     return (
-        <ProfileLayout>
+        <>
             <Head title="Update Password" />
             <Card className="w-full max-w-2xl rounded">
                 <CardHeader>
@@ -148,8 +149,21 @@ function Password() {
                     </form>
                 </CardContent>
             </Card>
-        </ProfileLayout>
+        </>
     );
 }
 
-export default Password;
+Password.layout = (page: React.ReactNode) => (
+    <Layout>
+        <div className="px-16 py-10">
+            <div className="mb-10">
+                <h1 className="text-lg font-bold">Profile</h1>
+                <p>Manage your profile.</p>
+            </div>
+            <div>
+                <ProfileNavigation />
+                <div className="mt-10 sm:mt-0">{page}</div>
+            </div>
+        </div>
+    </Layout>
+);
