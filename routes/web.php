@@ -50,6 +50,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
     });
+
+    Route::get('/payments', function () {
+        return Inertia::render('payment/index');
+    })->name('payment.index');
 });
 
 require __DIR__.'/auth.php';
