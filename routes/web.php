@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -51,9 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
     });
 
-    Route::get('/payments', function () {
-        return Inertia::render('payment/index');
-    })->name('payment.index');
+    Route::get('/payments', [PaymentController::class, 'index'])->name('payment.index');
 });
 
 require __DIR__.'/auth.php';

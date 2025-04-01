@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { router } from '@inertiajs/react';
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -14,22 +15,75 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Payment } from './columns';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
-    data: TData[];
+    payments: Payment[];
+    pagination: {
+        current_page: number;
+        last_page: number;
+        per_page: number;
+        total: number;
+    };
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, payments, pagination }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
 
+    const [data, setData] = useState<TData[]>(payments as TData[]);
+    const [pageIndex, setPageIndex] = useState(pagination.current_page - 1); // 0-indexed for TanStack
+    const [pageSize, setPageSize] = useState(pagination.per_page);
+    const [pageCount, setPageCount] = useState(pagination.last_page);
+
+    useEffect(() => {
+        setData(payments as TData[]);
+        setPageIndex(pagination.current_page - 1);
+        setPageSize(pagination.per_page);
+        setPageCount(pagination.last_page);
+    }, [payments, pagination]);
+
+    const handlePageChange = (newPageIndex: number) => {
+        // Don't fetch if we're already on this page
+        if (newPageIndex === pageIndex) return;
+
+        router.get(
+            route('payment.index'),
+            {
+                page: newPageIndex + 1, // Convert to 1-indexed for backend
+                per_page: pageSize,
+            },
+            {
+                preserveState: true,
+                only: ['payments', 'pagination'],
+            },
+        );
+    };
+
+    const handlePageSizeChange = (newPageSize: number) => {
+        router.get(
+            route('payment.index'),
+            {
+                page: 1, // Reset to first page when changing page size
+                per_page: newPageSize,
+            },
+            {
+                preserveState: true,
+                only: ['payments', 'pagination'],
+            },
+        );
+    };
+
     const table = useReactTable({
         data,
         columns,
+        manualPagination: true, // Enable manual pagination
+        pageCount,
+        rowCount: pagination.total,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
@@ -43,6 +97,28 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             columnFilters,
             columnVisibility,
             rowSelection,
+            pagination: {
+                pageIndex,
+                pageSize,
+            },
+        },
+        onPaginationChange: (updater) => {
+            const newPagination = typeof updater === 'function' ? updater({ pageIndex, pageSize }) : updater;
+
+            // Check what changed before updating state
+            const pageSizeChanged = newPagination.pageSize !== pageSize;
+            const pageIndexChanged = newPagination.pageIndex !== pageIndex;
+
+            // Update local state
+            setPageIndex(newPagination.pageIndex);
+            setPageSize(newPagination.pageSize);
+
+            // Handle API calls
+            if (pageSizeChanged) {
+                handlePageSizeChange(newPagination.pageSize);
+            } else if (pageIndexChanged) {
+                handlePageChange(newPagination.pageIndex);
+            }
         },
     });
 
