@@ -59,6 +59,7 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
             },
             {
                 preserveState: true,
+                preserveScroll: true,
                 only: ['payments', 'pagination'],
             },
         );
@@ -73,6 +74,7 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
             },
             {
                 preserveState: true,
+                preserveScroll: true,
                 only: ['payments', 'pagination'],
             },
         );
