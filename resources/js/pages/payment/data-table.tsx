@@ -69,7 +69,7 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
         });
     };
 
-    // debounced search
+    // debounced search // TODO to remove
     useEffect(() => {
         const handler = setTimeout(() => {
             syncWithServer({
