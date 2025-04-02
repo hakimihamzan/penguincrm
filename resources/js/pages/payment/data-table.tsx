@@ -3,18 +3,7 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { router } from '@inertiajs/react';
-import {
-    ColumnDef,
-    ColumnFiltersState,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
-    VisibilityState,
-} from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
 import { useEffect, useState } from 'react';
 import { Payment } from './columns';
 
@@ -29,14 +18,26 @@ interface DataTableProps<TData, TValue> {
     };
 }
 
+const params = new URLSearchParams(window.location.search);
+
 export function DataTable<TData, TValue>({ columns, payments, pagination }: DataTableProps<TData, TValue>) {
+    const sort_by = params.get('sort_by');
+    const sort_order = params.get('sort_order');
+
     const [data, setData] = useState<TData[]>(payments as TData[]);
-    const [pageIndex, setPageIndex] = useState(pagination.current_page - 1);
-    const [pageSize, setPageSize] = useState(pagination.per_page);
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-    const [rowSelection, setRowSelection] = useState({});
+    const [pageIndex, setPageIndex] = useState(pagination.current_page - 1); // Tanstack Table uses 0-based index
+    const [pageSize, setPageSize] = useState(pagination.per_page); // translated : 'per_page' => 'pageSize'
+    const [sorting, setSorting] = useState<SortingState>(() => {
+        if (sort_by && sort_order) {
+            return [
+                {
+                    id: sort_by,
+                    desc: sort_order === 'desc',
+                },
+            ];
+        }
+        return [];
+    });
 
     useEffect(() => {
         setData(payments as TData[]);
@@ -47,15 +48,18 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
         setPageSize(pagination.per_page);
     }, [pagination]);
 
-    const syncWithServer = (newPageIndex: number, newPageSize: number) => {
+    const syncWithServer = (params: { pageIndex?: number; pageSize?: number; sortBy?: string; sortOrder?: 'asc' | 'desc' }) => {
         router.get(
             route('payments.index'),
             {
-                page: newPageIndex + 1,
-                per_page: newPageSize,
+                page: (params.pageIndex !== undefined ? params.pageIndex : pageIndex) + 1,
+                per_page: params.pageSize !== undefined ? params.pageSize : pageSize,
+                sort_by: params.sortBy,
+                sort_order: params.sortOrder,
             },
             {
                 preserveState: true,
+                preserveScroll: true,
                 only: ['payments', 'pagination'],
             },
         );
@@ -66,23 +70,34 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
         columns,
         pageCount: pagination.last_page,
         manualPagination: true,
+        manualSorting: true,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
-        onColumnFiltersChange: setColumnFilters,
+        onSortingChange: (updater) => {
+            const newSorting = typeof updater === 'function' ? updater(sorting) : updater;
+            setSorting(newSorting);
+
+            if (newSorting.length > 0) {
+                syncWithServer({
+                    sortBy: newSorting[0].id,
+                    sortOrder: newSorting[0].desc ? 'desc' : 'asc',
+                    pageIndex: 0, // Reset to first page when sorting changes
+                });
+            } else {
+                syncWithServer({
+                    sortBy: undefined,
+                    sortOrder: undefined,
+                    pageIndex: 0,
+                });
+            }
+        },
         getFilteredRowModel: getFilteredRowModel(),
-        onColumnVisibilityChange: setColumnVisibility,
-        onRowSelectionChange: setRowSelection,
         state: {
             pagination: {
                 pageIndex,
                 pageSize,
             },
             sorting,
-            columnFilters,
-            columnVisibility,
-            rowSelection,
         },
         onPaginationChange: (updater) => {
             const newPagination = typeof updater === 'function' ? updater({ pageIndex, pageSize }) : updater;
@@ -97,14 +112,26 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
 
             // Only sync if something actually changed
             if (newPagination.pageIndex !== oldPageIndex || newPagination.pageSize !== oldPageSize) {
-                syncWithServer(newPagination.pageIndex, newPagination.pageSize);
+                const currentSort =
+                    sorting.length > 0
+                        ? {
+                              sortBy: sorting[0].id,
+                              sortOrder: sorting[0].desc ? ('desc' as const) : ('asc' as const),
+                          }
+                        : {};
+
+                syncWithServer({
+                    pageIndex: newPagination.pageIndex,
+                    pageSize: newPagination.pageSize,
+                    ...currentSort,
+                });
             }
         },
     });
 
     return (
         <>
-            <div className="flex items-center py-4">
+            <div className="flex items-center gap-2 py-4">
                 <Input
                     placeholder="Filter emails..."
                     value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
@@ -156,7 +183,9 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
                             table.getRowModel().rows.map((row) => (
                                 <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                                        <TableCell key={cell.id} className="px-5">
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
                                     ))}
                                 </TableRow>
                             ))
