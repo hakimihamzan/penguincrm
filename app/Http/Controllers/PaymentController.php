@@ -23,11 +23,19 @@ class PaymentController extends Controller
         $validated = optional($validated);
 
         $payments = Payment::query()
+            // filtering
+            ->when($validated['search'], function ($query, $search) {
+                return $query->where(function ($query) use ($search) {
+                    $query->where('status', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
             // sorting
             ->when($validated['sort_by'], function ($query, $sortBy) use ($validated) {
                 return $query->orderBy($sortBy, $validated['sort_order'] ?? 'asc');
             })
-            ->paginate($validated['per_page'] ?? 10, page: $validated['page'] ?? 1);
+            ->paginate($validated['per_page'] ?? 10, page: $validated['page'] ?? 1)
+            ->withQueryString();
 
         return Inertia::render('payment/index', [
             'payments' => $payments->through(function ($payment) {

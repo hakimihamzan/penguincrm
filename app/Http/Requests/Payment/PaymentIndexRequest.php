@@ -24,6 +24,7 @@ class PaymentIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'search' => ['nullable', 'string'],
             'sort_by' => ['nullable', 'string', Rule::in(['id', 'status', 'email', 'amount'])],
             'sort_order' => ['nullable', 'string', Rule::in(['asc', 'desc'])],
             'per_page' => ['nullable', 'integer', 'min:1'],
