@@ -3,18 +3,7 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { router } from '@inertiajs/react';
-import {
-    ColumnDef,
-    ColumnFiltersState,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
-    VisibilityState,
-} from '@tanstack/react-table';
+import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from '@tanstack/react-table';
 import { useEffect, useState } from 'react';
 import { Payment } from './columns';
 
@@ -30,51 +19,32 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({ columns, payments, pagination }: DataTableProps<TData, TValue>) {
+    const [data, setData] = useState<TData[]>(payments as TData[]);
+    const [pageIndex, setPageIndex] = useState(pagination.current_page - 1);
+    const [pageSize, setPageSize] = useState(pagination.per_page);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = useState({});
 
-    const [data, setData] = useState<TData[]>(payments as TData[]);
-    const [pageIndex, setPageIndex] = useState(pagination.current_page - 1); // 0-indexed for TanStack
-    const [pageSize, setPageSize] = useState(pagination.per_page);
-    const [pageCount, setPageCount] = useState(pagination.last_page);
-
     useEffect(() => {
         setData(payments as TData[]);
+    }, [payments]);
+
+    useEffect(() => {
         setPageIndex(pagination.current_page - 1);
         setPageSize(pagination.per_page);
-        setPageCount(pagination.last_page);
-    }, [payments, pagination]);
+    }, [pagination]);
 
-    const handlePageChange = (newPageIndex: number) => {
-        // Don't fetch if we're already on this page
-        if (newPageIndex === pageIndex) return;
-
+    const syncWithServer = (newPageIndex: number, newPageSize: number) => {
         router.get(
-            route('payment.index'),
+            route('payments.index'),
             {
-                page: newPageIndex + 1, // Convert to 1-indexed for backend
-                per_page: pageSize,
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                only: ['payments', 'pagination'],
-            },
-        );
-    };
-
-    const handlePageSizeChange = (newPageSize: number) => {
-        router.get(
-            route('payment.index'),
-            {
-                page: 1, // Reset to first page when changing page size
+                page: newPageIndex + 1,
                 per_page: newPageSize,
             },
             {
                 preserveState: true,
-                preserveScroll: true,
                 only: ['payments', 'pagination'],
             },
         );
@@ -83,9 +53,8 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
     const table = useReactTable({
         data,
         columns,
-        manualPagination: true, // Enable manual pagination
-        pageCount,
-        rowCount: pagination.total,
+        pageCount: pagination.last_page,
+        manualPagination: true,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
@@ -95,37 +64,35 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
         state: {
-            sorting,
-            columnFilters,
-            columnVisibility,
-            rowSelection,
             pagination: {
                 pageIndex,
                 pageSize,
             },
+            sorting,
+            columnFilters,
+            columnVisibility,
+            rowSelection,
         },
         onPaginationChange: (updater) => {
             const newPagination = typeof updater === 'function' ? updater({ pageIndex, pageSize }) : updater;
 
-            // Check what changed before updating state
-            const pageSizeChanged = newPagination.pageSize !== pageSize;
-            const pageIndexChanged = newPagination.pageIndex !== pageIndex;
+            // Store current values
+            const oldPageIndex = pageIndex;
+            const oldPageSize = pageSize;
 
             // Update local state
             setPageIndex(newPagination.pageIndex);
             setPageSize(newPagination.pageSize);
 
-            // Handle API calls
-            if (pageSizeChanged) {
-                handlePageSizeChange(newPagination.pageSize);
-            } else if (pageIndexChanged) {
-                handlePageChange(newPagination.pageIndex);
+            // Only sync if something actually changed
+            if (newPagination.pageIndex !== oldPageIndex || newPagination.pageSize !== oldPageSize) {
+                syncWithServer(newPagination.pageIndex, newPagination.pageSize);
             }
         },
     });
 
     return (
-        <div>
+        <>
             <div className="flex items-center py-4">
                 <Input
                     placeholder="Filter emails..."
@@ -203,6 +170,6 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
                     Next
                 </Button>
             </div>
-        </div>
+        </>
     );
 }
