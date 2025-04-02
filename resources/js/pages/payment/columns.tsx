@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, MoreHorizontal } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -26,6 +26,7 @@ export const columns: ColumnDef<Payment>[] = [
             <Checkbox
                 checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
                 onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                className="mx-3"
                 aria-label="Select all"
             />
         ),
@@ -41,7 +42,13 @@ export const columns: ColumnDef<Payment>[] = [
             return (
                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
                     Status
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {column.getIsSorted() === 'asc' ? (
+                        <ArrowUp className="h-4 w-4" />
+                    ) : column.getIsSorted() === 'desc' ? (
+                        <ArrowDown className="h-4 w-4" />
+                    ) : (
+                        <ArrowUpDown className="h-4 w-4 opacity-50" />
+                    )}{' '}
                 </Button>
             );
         },
@@ -52,7 +59,13 @@ export const columns: ColumnDef<Payment>[] = [
             return (
                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
                     Email
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {column.getIsSorted() === 'asc' ? (
+                        <ArrowUp className="h-4 w-4" />
+                    ) : column.getIsSorted() === 'desc' ? (
+                        <ArrowDown className="h-4 w-4" />
+                    ) : (
+                        <ArrowUpDown className="h-4 w-4 opacity-50" />
+                    )}{' '}
                 </Button>
             );
         },
