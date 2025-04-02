@@ -38,6 +38,7 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
         }
         return [];
     });
+    const [search, setSearch] = useState<string>(params.get('search') || '');
 
     useEffect(() => {
         setData(payments as TData[]);
@@ -48,22 +49,38 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
         setPageSize(pagination.per_page);
     }, [pagination]);
 
-    const syncWithServer = (params: { pageIndex?: number; pageSize?: number; sortBy?: string; sortOrder?: 'asc' | 'desc' }) => {
-        router.get(
-            route('payments.index'),
-            {
-                page: (params.pageIndex !== undefined ? params.pageIndex : pageIndex) + 1,
-                per_page: params.pageSize !== undefined ? params.pageSize : pageSize,
-                sort_by: params.sortBy,
-                sort_order: params.sortOrder,
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                only: ['payments', 'pagination'],
-            },
-        );
+    const syncWithServer = (params: { pageIndex?: number; pageSize?: number; sortBy?: string; sortOrder?: 'asc' | 'desc'; search?: string }) => {
+        // Create a clean object with current values as defaults
+        const requestParams = {
+            page: (params.pageIndex !== undefined ? params.pageIndex : pageIndex) + 1,
+            per_page: params.pageSize !== undefined ? params.pageSize : pageSize,
+            sort_by: params.sortBy,
+            sort_order: params.sortOrder,
+            search: params.search !== undefined ? params.search : search || undefined,
+        };
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const cleanParams = Object.fromEntries(Object.entries(requestParams).filter(([_key, v]) => v !== undefined));
+
+        router.get(route('payments.index'), cleanParams, {
+            preserveState: true,
+            preserveScroll: true,
+            only: ['payments', 'pagination'],
+        });
     };
+
+    // debounced search
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            syncWithServer({
+                pageIndex: 0, // Reset to first page when filter changes
+                search: search || undefined,
+            });
+        }, 300);
+
+        return () => clearTimeout(handler);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [search]);
 
     const table = useReactTable({
         data,
@@ -82,12 +99,14 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
                     sortBy: newSorting[0].id,
                     sortOrder: newSorting[0].desc ? 'desc' : 'asc',
                     pageIndex: 0, // Reset to first page when sorting changes
+                    search: search || undefined,
                 });
             } else {
                 syncWithServer({
                     sortBy: undefined,
                     sortOrder: undefined,
                     pageIndex: 0,
+                    search: search || undefined,
                 });
             }
         },
@@ -123,6 +142,7 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
                 syncWithServer({
                     pageIndex: newPagination.pageIndex,
                     pageSize: newPagination.pageSize,
+                    search: search || undefined, // Add the search parameter
                     ...currentSort,
                 });
             }
@@ -132,12 +152,7 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
     return (
         <>
             <div className="flex items-center gap-2 py-4">
-                <Input
-                    placeholder="Filter emails..."
-                    value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
-                    onChange={(event) => table.getColumn('email')?.setFilterValue(event.target.value)}
-                    className="max-w-sm"
-                />
+                <Input placeholder="Filter emails..." value={search} onChange={(event) => setSearch(event.target.value)} className="max-w-sm" />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="ml-auto">
