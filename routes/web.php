@@ -52,7 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
     });
 
-    Route::get('/payments', [PaymentController::class, 'index'])->name('payment.index');
+    Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
 });
 
 require __DIR__.'/auth.php';
