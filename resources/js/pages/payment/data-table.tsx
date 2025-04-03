@@ -3,8 +3,8 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { router } from '@inertiajs/react';
-import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
-import { useEffect, useState } from 'react';
+import { ColumnDef, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
+import { useState } from 'react';
 import { Payment } from './columns';
 
 interface DataTableProps<TData, TValue> {
@@ -18,9 +18,9 @@ interface DataTableProps<TData, TValue> {
     };
 }
 
-const params = new URLSearchParams(window.location.search);
-
 export function DataTable<TData, TValue>({ columns, payments, pagination }: DataTableProps<TData, TValue>) {
+    const params = new URLSearchParams(window.location.search);
+
     const sort_by = params.get('sort_by');
     const sort_order = params.get('sort_order');
 
@@ -40,48 +40,6 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
     });
     const [search, setSearch] = useState<string>(params.get('search') || '');
 
-    useEffect(() => {
-        setData(payments as TData[]);
-    }, [payments]);
-
-    useEffect(() => {
-        setPageIndex(pagination.current_page - 1);
-        setPageSize(pagination.per_page);
-    }, [pagination]);
-
-    const syncWithServer = (params: { pageIndex?: number; pageSize?: number; sortBy?: string; sortOrder?: 'asc' | 'desc'; search?: string }) => {
-        // Create a clean object with current values as defaults
-        const requestParams = {
-            page: (params.pageIndex !== undefined ? params.pageIndex : pageIndex) + 1,
-            per_page: params.pageSize !== undefined ? params.pageSize : pageSize,
-            sort_by: params.sortBy,
-            sort_order: params.sortOrder,
-            search: params.search !== undefined ? params.search : search || undefined,
-        };
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const cleanParams = Object.fromEntries(Object.entries(requestParams).filter(([_key, v]) => v !== undefined));
-
-        router.get(route('payments.index'), cleanParams, {
-            preserveState: true,
-            preserveScroll: true,
-            only: ['payments', 'pagination'],
-        });
-    };
-
-    // debounced search // TODO to remove
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            syncWithServer({
-                pageIndex: 0, // Reset to first page when filter changes
-                search: search || undefined,
-            });
-        }, 300);
-
-        return () => clearTimeout(handler);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search]);
-
     const table = useReactTable({
         data,
         columns,
@@ -94,23 +52,31 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
             const newSorting = typeof updater === 'function' ? updater(sorting) : updater;
             setSorting(newSorting);
 
-            if (newSorting.length > 0) {
-                syncWithServer({
-                    sortBy: newSorting[0].id,
-                    sortOrder: newSorting[0].desc ? 'desc' : 'asc',
-                    pageIndex: 0, // Reset to first page when sorting changes
-                    search: search || undefined,
-                });
-            } else {
-                syncWithServer({
-                    sortBy: undefined,
-                    sortOrder: undefined,
-                    pageIndex: 0,
-                    search: search || undefined,
-                });
-            }
+            /**
+             * @ kimi_rant ::  First way to re-fetch data for current page
+             */
+            const params = {
+                per_page: pageSize,
+                page: pageIndex + 1,
+            };
+
+            router.visit(route('payments.index'), {
+                method: 'get',
+                data: {
+                    ...params,
+                    ...{
+                        sort_by: newSorting[0]?.id,
+                        sort_order: newSorting[0]?.desc ? 'desc' : 'asc',
+                    },
+                },
+                preserveScroll: true,
+                preserveState: true,
+                only: ['payments', 'pagination'],
+                onSuccess: (page) => {
+                    setData(page.props.payments as TData[]);
+                },
+            });
         },
-        getFilteredRowModel: getFilteredRowModel(),
         state: {
             pagination: {
                 pageIndex,
@@ -129,21 +95,26 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
             setPageIndex(newPagination.pageIndex);
             setPageSize(newPagination.pageSize);
 
-            // Only sync if something actually changed
             if (newPagination.pageIndex !== oldPageIndex || newPagination.pageSize !== oldPageSize) {
-                const currentSort =
-                    sorting.length > 0
-                        ? {
-                              sortBy: sorting[0].id,
-                              sortOrder: sorting[0].desc ? ('desc' as const) : ('asc' as const),
-                          }
-                        : {};
+                /**
+                 * @ kimi_rant ::  Second way to re-fetch data for current page
+                 */
+                const url = new URL(window.location.href);
+                url.searchParams.set('page', (newPagination.pageIndex + 1).toString());
+                url.searchParams.set('per_page', newPagination.pageSize.toString());
 
-                syncWithServer({
-                    pageIndex: newPagination.pageIndex,
-                    pageSize: newPagination.pageSize,
-                    search: search || undefined, // Add the search parameter
-                    ...currentSort,
+                if (sort_by) {
+                    url.searchParams.set('sort_by', sort_by);
+                    url.searchParams.set('sort_order', sort_order || 'asc');
+                }
+
+                window.history.pushState({}, '', url.toString());
+
+                router.reload({
+                    onSuccess: (page) => {
+                        setData(page.props.payments as TData[]);
+                    },
+                    only: ['payments', 'pagination'],
                 });
             }
         },
