@@ -116,7 +116,7 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
         <>
             <Head title="Contact" />
             <div className="w-full overflow-x-auto px-4 py-10 md:px-8 lg:px-16">
-                <div className="mb-16">
+                <div className="mb-12">
                     <h1 className="text-lg font-bold">Contact</h1>
                     <p>You can manage all your contacts here.</p>
                 </div>
