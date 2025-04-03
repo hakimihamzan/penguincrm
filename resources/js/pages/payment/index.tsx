@@ -1,3 +1,5 @@
+import Layout from '@/layouts/app/app-layout';
+import { Head } from '@inertiajs/react';
 import { columns, Payment } from './columns';
 import { DataTable } from './data-table';
 
@@ -13,8 +15,18 @@ type PaymentProps = {
 
 export default function Index({ payments, pagination }: PaymentProps) {
     return (
-        <div className="container mx-auto p-20">
-            <DataTable columns={columns} payments={payments} pagination={pagination} />
-        </div>
+        <>
+            <Head title="Payment" />
+            <div className="w-full overflow-x-auto px-4 py-10 md:px-8 lg:px-16">
+                <div className="mb-8">
+                    <h1 className="text-lg font-bold">Payment</h1>
+                    <p>You can manage all your payments here.</p>
+                    <p className='text-muted-foreground mt-2'>Implementing TanStack data-table with InertiaJs</p>
+                </div>
+                <DataTable columns={columns} payments={payments} pagination={pagination} />
+            </div>
+        </>
     );
 }
+
+Index.layout = (page: React.ReactNode) => <Layout children={page} />;

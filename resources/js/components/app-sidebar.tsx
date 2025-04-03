@@ -1,4 +1,4 @@
-import { Building2, Command, Contact, Loader2, User } from 'lucide-react';
+import { Building2, Command, Contact, Loader2, User, Banknote } from 'lucide-react';
 import * as React from 'react';
 
 import { NavProjects } from '@/components/nav-projects';
@@ -22,6 +22,11 @@ const data = {
             name: 'Users',
             url: '/users',
             icon: User,
+        },
+        {
+            name: 'Payments',
+            url: '/payments',
+            icon: Banknote,
         },
     ],
 };
