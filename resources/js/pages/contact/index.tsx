@@ -69,6 +69,7 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                 sort_order: sortOrder,
                 page: newPage,
                 per_page: pagination.per_page,
+                search: search ? search : undefined,
             },
             {
                 preserveState: true,
@@ -131,8 +132,8 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                                 const newSearchValue = e.target.value;
                                 setSearch(newSearchValue);
 
-                                // Only trigger search if string is empty or has at least 3 chars
-                                if (newSearchValue.length > 2 || newSearchValue.length === 0) {
+                                // Only trigger search if string is empty or has at least 2 chars
+                                if (newSearchValue.length > 1 || newSearchValue.length === 0) {
                                     router.get(
                                         route('contacts.index'),
                                         {
