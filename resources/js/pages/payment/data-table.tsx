@@ -55,10 +55,18 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
             /**
              * @ kimi_rant ::  First way to re-fetch data for current page
              */
-            const params = {
+            const params: {
+                per_page: number;
+                page: number;
+                search?: string;
+            } = {
                 per_page: pageSize,
                 page: pageIndex + 1,
             };
+
+            if (search) {
+                params.search = search;
+            }
 
             router.visit(route('payments.index'), {
                 method: 'get',
@@ -123,7 +131,43 @@ export function DataTable<TData, TValue>({ columns, payments, pagination }: Data
     return (
         <>
             <div className="flex items-center gap-2 py-4">
-                <Input placeholder="Filter emails..." value={search} onChange={(event) => setSearch(event.target.value)} className="max-w-sm" />
+                <Input
+                    placeholder="Filter emails..."
+                    value={search}
+                    onChange={(event) => {
+                        const newSearch = event.target.value;
+                        setSearch(newSearch);
+
+                        // Reset to page 1 when searching
+                        setPageIndex(0);
+
+                        // Update URL and fetch data
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('page', '1');
+
+                        if (newSearch) {
+                            url.searchParams.set('search', newSearch);
+                        } else {
+                            url.searchParams.delete('search');
+                        }
+
+                        // Preserve sorting parameters
+                        if (sorting.length > 0) {
+                            url.searchParams.set('sort_by', sorting[0].id);
+                            url.searchParams.set('sort_order', sorting[0].desc ? 'desc' : 'asc');
+                        }
+
+                        window.history.pushState({}, '', url.toString());
+
+                        router.reload({
+                            onSuccess: (page) => {
+                                setData(page.props.payments as TData[]);
+                            },
+                            only: ['payments', 'pagination'],
+                        });
+                    }}
+                    className="max-w-sm"
+                />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="ml-auto">
