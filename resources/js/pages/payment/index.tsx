@@ -21,7 +21,7 @@ export default function Index({ payments, pagination }: PaymentProps) {
                 <div className="mb-8">
                     <h1 className="text-lg font-bold">Payment</h1>
                     <p>You can manage all your payments here.</p>
-                    <p className='text-muted-foreground mt-2'>Implementing TanStack data-table with InertiaJs</p>
+                    <p className="text-muted-foreground mt-2">Implementing TanStack data-table with InertiaJs</p>
                 </div>
                 <DataTable columns={columns} payments={payments} pagination={pagination} />
             </div>

@@ -1,4 +1,4 @@
-import { Building2, Command, Contact, Loader2, User, Banknote } from 'lucide-react';
+import { Banknote, Building2, Command, Contact, Loader2, User } from 'lucide-react';
 import * as React from 'react';
 
 import { NavProjects } from '@/components/nav-projects';
