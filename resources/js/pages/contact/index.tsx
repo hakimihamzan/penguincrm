@@ -51,7 +51,7 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
     /**
      *  @ kimi_rant
      *
-     * At least 2 ways to handle pagination in Inertia.js, either by using the router.get or <Link> component.
+     * 2 main ways to handle pagination in Inertia.js, either by using the router.get or <Link> component.
      * The benefit of using the router.get is that to better control the flow of the application or for more complex scenarios,
      * the <Link> component is more suitable for simple navigation between pages, but <Link> can use prefetch which is awesome.
      *
@@ -97,6 +97,7 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                 per_page: pagination.per_page,
                 sort_by: column,
                 sort_order: newOrder,
+                search: search ? search : undefined,
             },
             {
                 preserveState: true,
