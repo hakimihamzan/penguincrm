@@ -21,7 +21,7 @@ class ContactController extends Controller
     {
         $validated = $request->validated();
 
-        $validated['sort_by'] = $validated['sort_by'] ?? 'name';
+        $validated['sort_by'] = $validated['sort_by'] ?? 'id';
         $validated['sort_order'] = $validated['sort_order'] ?? 'asc';
 
         $validated = optional($validated);
