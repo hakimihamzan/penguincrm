@@ -39,6 +39,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return Inertia::render('profile/index');
         })->name('profile.me');
 
+        Route::post('/avatar', [UserController::class, 'updateAvatar'])->name('profile.avatar');
+
         Route::post('/me', [UserController::class, 'update'])->name('profile.update');
 
         Route::get('/appearance', function () {
