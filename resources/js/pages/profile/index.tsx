@@ -13,7 +13,9 @@ import { toast } from 'sonner';
 
 export default function Profile() {
     const user = usePage<SharedData>().props.auth.user;
+
     const fileInputRef = useRef<HTMLInputElement>(null);
+
     const [preview, setPreview] = useState<string | undefined>(() => {
         const avatar = user.avatar;
 
