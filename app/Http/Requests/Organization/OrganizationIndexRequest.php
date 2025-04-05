@@ -25,7 +25,7 @@ class OrganizationIndexRequest extends FormRequest
     {
         return [
             'search' => ['nullable', 'string'],
-            'sort_by' => ['nullable', 'string', Rule::in(['id', 'name', 'country', 'employee_count', 'is_active'])],
+            'sort_by' => ['nullable', 'string', Rule::in(['id', 'name', 'phone', 'website', 'country', 'employee_count', 'is_active'])],
             'sort_order' => ['nullable', 'string', Rule::in(['asc', 'desc'])],
             'per_page' => ['nullable', 'integer', 'min:1'],
             'page' => ['nullable', 'integer', 'min:1'],
