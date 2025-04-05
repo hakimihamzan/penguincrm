@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ArrowUpDown, MoreHorizontal } from 'lucide-react';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Organization } from './index';
@@ -134,7 +135,11 @@ export const columns: ColumnDef<Organization>[] = [
         cell: ({ row }) => {
             const isActive = row.getValue('is_active') ? 'Yes' : 'No';
 
-            return <div className="">{isActive}</div>;
+            return (
+                <Badge variant={'outline'} className={isActive === 'Yes' ? 'border-green-200 bg-green-50 text-green-700' : ''}>
+                    {isActive}
+                </Badge>
+            );
         },
     },
     {
