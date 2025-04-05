@@ -17,6 +17,7 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({ columns, organizations, pagination }: DataTableProps<TData, TValue>) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [data, setData] = useState<TData[]>(organizations as TData[]);
 
     const table = useReactTable({

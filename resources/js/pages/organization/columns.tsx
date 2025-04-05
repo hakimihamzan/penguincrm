@@ -75,7 +75,7 @@ export const columns: ColumnDef<Organization>[] = [
             );
         },
         cell: ({ row }) => {
-            let website = row.getValue('website') as string;
+            const website = row.getValue('website') as string;
 
             const truncatedWebsite = website.length > 30 ? `${website.slice(0, 30)}...` : website;
 
@@ -145,6 +145,7 @@ export const columns: ColumnDef<Organization>[] = [
     {
         id: 'actions',
         cell: ({ row }) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const organization = row.original;
 
             return (
