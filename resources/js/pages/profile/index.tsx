@@ -27,6 +27,7 @@ export default function Profile() {
         }
         return undefined;
     });
+    const [isUploading, setIsUploading] = useState(false);
 
     const { data, setData, post, processing, errors } = useForm({
         name: user.name || '',
@@ -67,6 +68,8 @@ export default function Profile() {
         };
         reader.readAsDataURL(file);
 
+        setIsUploading(true);
+
         // Upload using router.post
         router.visit(route('profile.avatar'), {
             method: 'post',
@@ -76,6 +79,7 @@ export default function Profile() {
             forceFormData: true,
             preserveScroll: true,
             preserveState: true,
+            onFinish: () => setIsUploading(false),
         });
     };
 
@@ -102,8 +106,15 @@ export default function Profile() {
                                     <AvatarImage src={preview} />
                                     <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
                                 </Avatar>
-                                <Button type="button" size="sm" variant="outline" className="mt-2 w-full" onClick={triggerFileInput}>
-                                    Change Photo
+                                <Button
+                                    disabled={isUploading}
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    className="mt-2 w-full"
+                                    onClick={triggerFileInput}
+                                >
+                                    {isUploading ? 'Uploading...' : 'Change Photo'}
                                 </Button>
                                 <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
                             </div>

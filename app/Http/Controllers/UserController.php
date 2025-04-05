@@ -48,7 +48,7 @@ class UserController extends Controller
         $input = $request->validated();
 
         $avatar = $input['avatar'];
-        $imageName = now()->format('Y_m_d_H_i_s') . '__' . $user->id  . '__' . $avatar->hashName();
+        $imageName = now()->format('Y_m_d_H_i_s').'__'.$user->id.'__'.$avatar->hashName();
 
         $path = $avatar->storeAs('avatars', $imageName, 'public');
 

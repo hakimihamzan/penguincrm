@@ -24,11 +24,11 @@ class UserFactory extends Factory
     public function definition(): array
     {
         $name = fake()->name();
-        $email = strtolower(str_replace(' ', '', $name)) . fake()->numberBetween(1, 1000) . '@' . fake()->freeEmailDomain();
+        $email = strtolower(str_replace(' ', '', $name)).fake()->numberBetween(1, 1000).'@'.fake()->freeEmailDomain();
 
         $randomColor1 = fake()->randomElement(['008080', '0000FF', 'FF0000', '00FF00', 'FFFF00']);
         $randomColor2 = fake()->randomElement(['008080', '0000FF', 'FF0000', '00FF00', 'FFFF00']);
-        $randomText = 'Hello+' . explode(' ', $name)[0];
+        $randomText = 'Hello+'.explode(' ', $name)[0];
 
         if (fake()->boolean(50)) {
             $avatar = "https://dummyjson.com/image/200x200/{$randomColor1}/{$randomColor2}?text={$randomText}";
@@ -51,7 +51,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
     }
