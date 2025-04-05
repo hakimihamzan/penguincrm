@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\UserIndexRequest;
 use App\Http\Requests\User\UserUpdateAvatarRequest;
 use App\Http\Requests\User\UserUpdateRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -17,9 +18,28 @@ class UserController extends Controller
     /**
      * Show the users list.
      */
-    public function index(Request $request): Response
+    public function index(UserIndexRequest $request): Response
     {
-        return Inertia::render('user', []);
+        $validated = $request->validated();
+
+        $validated = optional($validated);
+
+        $users = User::query()
+            ->orderBy('updated_at', 'desc')
+            ->paginate($validated['per_page'] ?? 12, page: $validated['page'] ?? 1)
+            ->withQueryString();
+
+        return Inertia::render('user/index', [
+            'users' => $users->through(function ($user) {
+                return (new UserResource($user))->toArray(request());
+            })->values()->all(),
+            'pagination' => [
+                'current_page' => $users->currentPage(),
+                'last_page' => $users->lastPage(),
+                'per_page' => $users->perPage(),
+                'total' => $users->total(),
+            ],
+        ]);
     }
 
     /**
