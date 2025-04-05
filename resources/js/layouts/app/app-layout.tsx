@@ -10,7 +10,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <SiteHeader />
                 <div className="flex flex-1">
                     <AppSidebar />
-                    <SidebarInset>{children}</SidebarInset>
+                    <SidebarInset
+                        style={{
+                            width: `calc(100vw - var(--sidebar-width))`,
+                            overflow: `hidden`,
+                        }}
+                    >
+                        {children}
+                    </SidebarInset>
                     <Toaster />
                 </div>
             </SidebarProvider>
