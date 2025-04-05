@@ -7,19 +7,30 @@ import { Label } from '@/components/ui/label';
 import { useInitials } from '@/hooks/use-initials';
 import Layout from '@/layouts/app/app-layout';
 import { SharedData } from '@/types';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { FormEvent, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function Profile() {
     const user = usePage<SharedData>().props.auth.user;
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [preview, setPreview] = useState<string | null>(null);
+    const [preview, setPreview] = useState<string | undefined>(() => {
+        const avatar = user.avatar;
+
+        if (avatar) {
+            // if avatar is a relative path
+            if (!avatar.startsWith('http')) {
+                return `/storage/${avatar}`;
+            } else {
+                return avatar;
+            }
+        }
+        return undefined;
+    });
 
     const { data, setData, post, processing, errors } = useForm({
         name: user.name || '',
         email: user.email || '',
-        photo: null as File | null, // TODO impplement file upload
     });
 
     const handleSubmit = (e: FormEvent) => {
@@ -33,20 +44,39 @@ export default function Profile() {
         });
     };
 
+    /**
+     * @ kimi_rant
+     *
+     * Immediately upload photo onChange
+     */
     const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
 
-        if (file) {
-            setData('photo', file);
+        if (!file) return;
 
-            // Create preview URL
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                setPreview(e.target?.result as string);
-            };
-            reader.readAsDataURL(file);
+        // FE size validation
+        if (file.size > 2 * 1024 * 1024) {
+            toast.error('File size is too large. Please select a file smaller than 2MB.');
+            return;
         }
+
+        // Create preview URL, then setPreview + set avatar
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            setPreview(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+
+        // Upload using router.post
+        router.visit(route('profile.avatar'), {
+            method: 'post',
+            data: {
+                avatar: file,
+            },
+            forceFormData: true,
+            preserveScroll: true,
+            preserveState: true,
+        });
     };
 
     const triggerFileInput = () => {
@@ -69,7 +99,7 @@ export default function Profile() {
                         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
                             <div className="relative mr-2 flex flex-col items-center gap-1">
                                 <Avatar className="border-border h-24 w-24 border-2">
-                                    <AvatarImage src={preview || user.avatar} />
+                                    <AvatarImage src={preview} />
                                     <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
                                 </Avatar>
                                 <Button type="button" size="sm" variant="outline" className="mt-2 w-full" onClick={triggerFileInput}>
