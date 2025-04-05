@@ -3,16 +3,7 @@ import { ArrowDown, ArrowUp, ArrowUpDown, MoreHorizontal } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-
-export type Organization = {
-    id: string;
-    name: string;
-    phone: string;
-    website: string;
-    country: string;
-    employee_count: string;
-    is_active: boolean;
-};
+import { Organization } from './index';
 
 export const columns: ColumnDef<Organization>[] = [
     {
