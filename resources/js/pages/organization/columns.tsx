@@ -42,11 +42,44 @@ export const columns: ColumnDef<Organization>[] = [
     },
     {
         accessorKey: 'phone',
-        header: () => <div className="">Phone</div>,
+        header: ({ column }) => {
+            return (
+                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    Phone
+                    {column.getIsSorted() === 'asc' ? (
+                        <ArrowUp className="h-4 w-4" />
+                    ) : column.getIsSorted() === 'desc' ? (
+                        <ArrowDown className="h-4 w-4" />
+                    ) : (
+                        <ArrowUpDown className="h-4 w-4 opacity-50" />
+                    )}{' '}
+                </Button>
+            );
+        },
     },
     {
         accessorKey: 'website',
-        header: () => <div className="">Website</div>,
+        header: ({ column }) => {
+            return (
+                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    Website
+                    {column.getIsSorted() === 'asc' ? (
+                        <ArrowUp className="h-4 w-4" />
+                    ) : column.getIsSorted() === 'desc' ? (
+                        <ArrowDown className="h-4 w-4" />
+                    ) : (
+                        <ArrowUpDown className="h-4 w-4 opacity-50" />
+                    )}{' '}
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            let website = row.getValue('website') as string;
+
+            const truncatedWebsite = website.length > 30 ? `${website.slice(0, 30)}...` : website;
+
+            return <div className="">{truncatedWebsite}</div>;
+        },
     },
     {
         accessorKey: 'country',
