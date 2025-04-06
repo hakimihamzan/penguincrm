@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ColumnDef, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
+import { Link } from '@inertiajs/react';
+import { ColumnDef, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
 import { useState } from 'react';
 import { Organization } from '.';
 
@@ -17,8 +18,25 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({ columns, organizations, pagination }: DataTableProps<TData, TValue>) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [data, setData] = useState<TData[]>(organizations as TData[]);
+    const params = new URLSearchParams(window.location.search);
+
+    const sort_by = params.get('sort_by');
+    const sort_order = params.get('sort_order');
+
+    const [data] = useState<TData[]>(organizations as TData[]);
+    const [pageIndex] = useState(pagination.current_page - 1); // Tanstack Table uses 0-based index
+    const [pageSize] = useState(pagination.per_page); // translated : 'per_page' => 'pageSize'
+    const [sorting] = useState<SortingState>(() => {
+        if (sort_by && sort_order) {
+            return [
+                {
+                    id: sort_by,
+                    desc: sort_order === 'desc',
+                },
+            ];
+        }
+        return [];
+    });
 
     const table = useReactTable({
         data,
@@ -28,6 +46,13 @@ export function DataTable<TData, TValue>({ columns, organizations, pagination }:
         manualSorting: true,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        state: {
+            pagination: {
+                pageIndex,
+                pageSize,
+            },
+            sorting,
+        },
     });
 
     return (
@@ -74,11 +99,48 @@ export function DataTable<TData, TValue>({ columns, organizations, pagination }:
                         </Table>
                     </div>
                     <div className="flex items-center justify-end space-x-2 py-4">
-                        <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-                            Previous
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={!table.getCanPreviousPage()}
+                            onClick={() => {
+                                table.previousPage();
+                            }}
+                            asChild={pagination.current_page > 1}
+                        >
+                            <Link
+                                href={route('organizations.index', {
+                                    page: pagination.current_page - 1,
+                                    per_page: pageSize,
+                                    sort_by: params.get('sort_by') || undefined,
+                                    sort_order: params.get('sort_order') || undefined,
+                                })}
+                                preserveScroll
+                            >
+                                Previous
+                            </Link>
                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-                            Next
+
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={!table.getCanNextPage()}
+                            onClick={() => {
+                                table.nextPage();
+                            }}
+                            asChild={pagination.current_page < pagination.last_page}
+                        >
+                            <Link
+                                href={route('organizations.index', {
+                                    page: pagination.current_page + 1,
+                                    per_page: pageSize,
+                                    sort_by: params.get('sort_by') || undefined,
+                                    sort_order: params.get('sort_order') || undefined,
+                                })}
+                                preserveScroll
+                            >
+                                Next
+                            </Link>
                         </Button>
                     </div>
                 </div>

@@ -4,14 +4,24 @@ import { ArrowDown, ArrowUp, ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Link, router } from '@inertiajs/react';
 import { Organization } from './index';
+import { toast } from 'sonner';
 
 export const columns: ColumnDef<Organization>[] = [
     {
         accessorKey: 'id',
         header: ({ column }) => {
             return (
-                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                <Link
+                    href={route('organizations.index', {
+                        page: 1,
+                        per_page: 10,
+                        sort_order: column.getIsSorted() === 'asc' || !column.getIsSorted() ? 'desc' : 'asc',
+                        sort_by: column.id,
+                    })}
+                    className="hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex h-9 items-center gap-2 px-4 py-2 has-[>svg]:px-3"
+                >
                     #
                     {column.getIsSorted() === 'asc' ? (
                         <ArrowUp className="h-4 w-4" />
@@ -19,8 +29,8 @@ export const columns: ColumnDef<Organization>[] = [
                         <ArrowDown className="h-4 w-4" />
                     ) : (
                         <ArrowUpDown className="h-4 w-4 opacity-50" />
-                    )}{' '}
-                </Button>
+                    )}
+                </Link>
             );
         },
     },
@@ -28,7 +38,15 @@ export const columns: ColumnDef<Organization>[] = [
         accessorKey: 'name',
         header: ({ column }) => {
             return (
-                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                <Link
+                    href={route('organizations.index', {
+                        page: 1,
+                        per_page: 10,
+                        sort_order: column.getIsSorted() === 'asc' || !column.getIsSorted() ? 'desc' : 'asc',
+                        sort_by: column.id,
+                    })}
+                    className="hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex h-9 items-center gap-2 px-4 py-2 has-[>svg]:px-3"
+                >
                     Name
                     {column.getIsSorted() === 'asc' ? (
                         <ArrowUp className="h-4 w-4" />
@@ -36,8 +54,8 @@ export const columns: ColumnDef<Organization>[] = [
                         <ArrowDown className="h-4 w-4" />
                     ) : (
                         <ArrowUpDown className="h-4 w-4 opacity-50" />
-                    )}{' '}
-                </Button>
+                    )}
+                </Link>
             );
         },
     },
@@ -45,7 +63,15 @@ export const columns: ColumnDef<Organization>[] = [
         accessorKey: 'phone',
         header: ({ column }) => {
             return (
-                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                <Link
+                    href={route('organizations.index', {
+                        page: 1,
+                        per_page: 10,
+                        sort_order: column.getIsSorted() === 'asc' || !column.getIsSorted() ? 'desc' : 'asc',
+                        sort_by: column.id,
+                    })}
+                    className="hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex h-9 items-center gap-2 px-4 py-2 has-[>svg]:px-3"
+                >
                     Phone
                     {column.getIsSorted() === 'asc' ? (
                         <ArrowUp className="h-4 w-4" />
@@ -53,40 +79,24 @@ export const columns: ColumnDef<Organization>[] = [
                         <ArrowDown className="h-4 w-4" />
                     ) : (
                         <ArrowUpDown className="h-4 w-4 opacity-50" />
-                    )}{' '}
-                </Button>
+                    )}
+                </Link>
             );
-        },
-    },
-    {
-        accessorKey: 'website',
-        header: ({ column }) => {
-            return (
-                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-                    Website
-                    {column.getIsSorted() === 'asc' ? (
-                        <ArrowUp className="h-4 w-4" />
-                    ) : column.getIsSorted() === 'desc' ? (
-                        <ArrowDown className="h-4 w-4" />
-                    ) : (
-                        <ArrowUpDown className="h-4 w-4 opacity-50" />
-                    )}{' '}
-                </Button>
-            );
-        },
-        cell: ({ row }) => {
-            const website = row.getValue('website') as string;
-
-            const truncatedWebsite = website.length > 30 ? `${website.slice(0, 30)}...` : website;
-
-            return <div className="">{truncatedWebsite}</div>;
         },
     },
     {
         accessorKey: 'country',
         header: ({ column }) => {
             return (
-                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                <Link
+                    href={route('organizations.index', {
+                        page: 1,
+                        per_page: 10,
+                        sort_order: column.getIsSorted() === 'asc' || !column.getIsSorted() ? 'desc' : 'asc',
+                        sort_by: column.id,
+                    })}
+                    className="hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex h-9 items-center gap-2 px-4 py-2 has-[>svg]:px-3"
+                >
                     Country
                     {column.getIsSorted() === 'asc' ? (
                         <ArrowUp className="h-4 w-4" />
@@ -94,8 +104,8 @@ export const columns: ColumnDef<Organization>[] = [
                         <ArrowDown className="h-4 w-4" />
                     ) : (
                         <ArrowUpDown className="h-4 w-4 opacity-50" />
-                    )}{' '}
-                </Button>
+                    )}
+                </Link>
             );
         },
     },
@@ -103,7 +113,15 @@ export const columns: ColumnDef<Organization>[] = [
         accessorKey: 'employee_count',
         header: ({ column }) => {
             return (
-                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                <Link
+                    href={route('organizations.index', {
+                        page: 1,
+                        per_page: 10,
+                        sort_order: column.getIsSorted() === 'asc' || !column.getIsSorted() ? 'desc' : 'asc',
+                        sort_by: column.id,
+                    })}
+                    className="hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex h-9 items-center gap-2 px-4 py-2 has-[>svg]:px-3"
+                >
                     Employee Count
                     {column.getIsSorted() === 'asc' ? (
                         <ArrowUp className="h-4 w-4" />
@@ -111,8 +129,8 @@ export const columns: ColumnDef<Organization>[] = [
                         <ArrowDown className="h-4 w-4" />
                     ) : (
                         <ArrowUpDown className="h-4 w-4 opacity-50" />
-                    )}{' '}
-                </Button>
+                    )}
+                </Link>
             );
         },
     },
@@ -120,7 +138,15 @@ export const columns: ColumnDef<Organization>[] = [
         accessorKey: 'is_active',
         header: ({ column }) => {
             return (
-                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                <Link
+                    href={route('organizations.index', {
+                        page: 1,
+                        per_page: 10,
+                        sort_order: column.getIsSorted() === 'asc' || !column.getIsSorted() ? 'desc' : 'asc',
+                        sort_by: column.id,
+                    })}
+                    className="hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 flex h-9 items-center gap-2 px-4 py-2 has-[>svg]:px-3"
+                >
                     Is Active?
                     {column.getIsSorted() === 'asc' ? (
                         <ArrowUp className="h-4 w-4" />
@@ -128,8 +154,8 @@ export const columns: ColumnDef<Organization>[] = [
                         <ArrowDown className="h-4 w-4" />
                     ) : (
                         <ArrowUpDown className="h-4 w-4 opacity-50" />
-                    )}{' '}
-                </Button>
+                    )}
+                </Link>
             );
         },
         cell: ({ row }) => {
@@ -145,7 +171,6 @@ export const columns: ColumnDef<Organization>[] = [
     {
         id: 'actions',
         cell: ({ row }) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const organization = row.original;
 
             return (
@@ -158,8 +183,24 @@ export const columns: ColumnDef<Organization>[] = [
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <Link href={route('organizations.edit', organization.id)}>Edit</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    if (confirm(`Are you sure you want to delete ${organization.name}?`)) {
+                                        router.delete(route('organizations.destroy', organization.id), {
+                                            preserveState: false,
+                                            onSuccess: () => {
+                                                toast.success(`Organization : ${organization.name} deleted successfully`);
+                                            }
+                                        });
+                                    }
+                                }}
+                                className="text-destructive focus:text-destructive"
+                            >
+                                Delete
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
