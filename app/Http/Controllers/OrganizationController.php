@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Organization\OrganizationUpdateRequest;
 use App\Http\Requests\Organization\OrganizationIndexRequest;
+use App\Http\Requests\Organization\OrganizationUpdateRequest;
 use App\Http\Resources\OrganizationResource;
 use App\Models\Organization;
 use Illuminate\Http\RedirectResponse;

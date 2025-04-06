@@ -5,8 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Link, router } from '@inertiajs/react';
-import { Organization } from './index';
 import { toast } from 'sonner';
+import { Organization } from './index';
 
 export const columns: ColumnDef<Organization>[] = [
     {
@@ -193,7 +193,7 @@ export const columns: ColumnDef<Organization>[] = [
                                             preserveState: false,
                                             onSuccess: () => {
                                                 toast.success(`Organization : ${organization.name} deleted successfully`);
-                                            }
+                                            },
                                         });
                                     }
                                 }}
