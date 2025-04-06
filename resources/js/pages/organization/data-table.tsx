@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Link } from '@inertiajs/react';
 import { ColumnDef, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
@@ -58,10 +57,7 @@ export function DataTable<TData, TValue>({ columns, organizations, pagination }:
     return (
         <>
             {pagination.total > 0 ? (
-                <div className="mt-8">
-                    <div className="flex items-center gap-2 py-4">
-                        <Input placeholder="Filter emails..." className="max-w-sm" />
-                    </div>
+                <div className="mt-16">
                     <div className="rounded-md border">
                         <Table>
                             <TableHeader>
