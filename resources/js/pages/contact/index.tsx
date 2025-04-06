@@ -121,6 +121,7 @@ function Contact({ contacts, pagination, filters }: ContactProps) {
                 <div className="mb-12">
                     <h1 className="text-lg font-bold">Contact</h1>
                     <p>You can manage all your contacts here.</p>
+                    <p className="text-muted-foreground mt-2">Implementing Shadcn &lt; Table &gt; with manual pagination + sorting </p>
                 </div>
 
                 <div className="mb-6 flex items-center justify-between">
