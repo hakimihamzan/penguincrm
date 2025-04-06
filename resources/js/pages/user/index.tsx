@@ -37,7 +37,7 @@ function Index({ users, pagination }: UserProps) {
                                         <div className="flex items-center justify-between">
                                             <Avatar className="h-10 w-10" aria-label={`Profile photo of ${user.name}`}>
                                                 <AvatarImage
-                                                    src={user.avatar ? (user.avatar.startsWith('http') ? user.avatar : `/${user.avatar}`) : undefined}
+                                                    src={user.avatar ? (user.avatar.startsWith('http') ? user.avatar : `/storage/${user.avatar}`) : undefined}
                                                 />
                                                 <AvatarFallback className="rounded-lg">{getInitials(user.name)}</AvatarFallback>
                                             </Avatar>

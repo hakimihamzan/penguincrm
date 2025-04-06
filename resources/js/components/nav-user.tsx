@@ -22,7 +22,7 @@ export function NavUser() {
     const user = usePage<SharedData>().props.auth.user;
 
     const avatar = user.avatar;
-    const avatarSrc = avatar && !avatar.startsWith('http') ? `/${avatar}` : avatar;
+    const avatarSrc = avatar && !avatar.startsWith('http') ? `/storage/${avatar}` : avatar;
 
     const { isMobile } = useSidebar();
 
