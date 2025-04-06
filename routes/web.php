@@ -28,6 +28,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::group(['prefix' => 'organizations'], function () {
         Route::get('/', [OrganizationController::class, 'index'])->name('organizations.index');
+        Route::get('/edit/{organization}', [OrganizationController::class, 'edit'])->name('organizations.edit');
+        Route::put('/{organization}', [OrganizationController::class, 'update'])->name('organizations.update');
+        Route::delete('/{organization}', [OrganizationController::class, 'destroy'])->name('organizations.destroy');
     });
 
     Route::group(['prefix' => 'users'], function () {

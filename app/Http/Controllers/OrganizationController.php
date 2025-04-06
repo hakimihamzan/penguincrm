@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Organization\OrganizationUpdateRequest;
 use App\Http\Requests\Organization\OrganizationIndexRequest;
 use App\Http\Resources\OrganizationResource;
 use App\Models\Organization;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -52,5 +55,49 @@ class OrganizationController extends Controller
                 'total' => $organizations->total(),
             ],
         ]);
+    }
+
+    /**
+     * Show the organization edit form.
+     */
+    public function edit(Organization $organization): Response
+    {
+        return Inertia::render('organization/edit', [
+            'organization' => (new OrganizationResource($organization))->toArray(request()),
+        ]);
+    }
+
+    /**
+     * Update the organization.
+     */
+    public function update(Organization $organization, OrganizationUpdateRequest $request): RedirectResponse
+    {
+        $input = $request->validated();
+
+        $organization->update([
+            'name' => $input['name'],
+            'description' => $input['description'] ?? null,
+            'email' => $input['email'] ?? null,
+            'phone' => $input['phone'] ?? null,
+            'website' => $input['website'] ?? null,
+            'city' => $input['city'] ?? null,
+            'state' => $input['state'] ?? null,
+            'country' => $input['country'] ?? null,
+            'employee_count' => $input['employee_count'] ?? null,
+            'founded_date' => $input['founded_date'] ?? null,
+            'is_active' => $input['is_active'],
+        ]);
+
+        return Redirect::route('organizations.index');
+    }
+
+    /**
+     * Destroy the organization.
+     */
+    public function destroy(Organization $organization): RedirectResponse
+    {
+        $organization->delete();
+
+        return to_route('organizations.index');
     }
 }
