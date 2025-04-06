@@ -22,7 +22,7 @@ export function NavUser() {
     const user = usePage<SharedData>().props.auth.user;
 
     const avatar = user.avatar;
-    const avatarSrc = avatar && !avatar.startsWith('http') ? `/storage/${avatar}` : avatar;
+    const avatarSrc = avatar && !avatar.startsWith('http') ? `/${avatar}` : avatar;
 
     const { isMobile } = useSidebar();
 
@@ -71,10 +71,15 @@ export function NavUser() {
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                                <Link href="#?donate" className="flex w-full items-center gap-2" onClick={cleanup}>
+                                <a
+                                    href="https://buymeacoffee.com/hakimihamzan"
+                                    target="_blank"
+                                    onClick={cleanup}
+                                    rel="noopener noreferrer"
+                                    className="flex w-full items-center gap-2"
+                                >
                                     <Gift /> Donate
-                                    {/* TODO add links to donate */}
-                                </Link>
+                                </a>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />

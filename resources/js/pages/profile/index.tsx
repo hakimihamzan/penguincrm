@@ -22,7 +22,7 @@ export default function Profile() {
         if (avatar) {
             // if avatar is a relative path
             if (!avatar.startsWith('http')) {
-                return `/storage/${avatar}`;
+                return `/${avatar}`;
             } else {
                 return avatar;
             }
