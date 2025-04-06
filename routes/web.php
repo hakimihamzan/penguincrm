@@ -5,6 +5,12 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\UserController;
+use App\Models\Contact;
+use App\Models\Organization;
+use App\Models\Payment;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -14,7 +20,78 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+        $organizationCreatedLastSixMonths = Organization::selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
+            ->where('created_at', '>=', now()->subMonths(6))
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get()
+            ->map(function ($item) {
+                $date = Carbon::createFromFormat('Y-m', $item->month);
+
+                return [
+                    'month' => $date->format('F'),
+                    'desktop' => $item->count,
+                ];
+            });
+
+        $organizationsBySize = DB::table('organizations')
+            ->select(
+                DB::raw('CASE
+                    WHEN employee_count BETWEEN 1 AND 10 THEN "micro"
+                    WHEN employee_count BETWEEN 11 AND 50 THEN "small"
+                    WHEN employee_count BETWEEN 51 AND 250 THEN "medium"
+                    WHEN employee_count BETWEEN 251 AND 1000 THEN "large"
+                    ELSE "enterprise"
+                END as category'),
+                DB::raw('count(*) as value')
+            )
+            ->groupBy('category')
+            ->orderBy(DB::raw('FIELD(category, "micro", "small", "medium", "large", "enterprise")'))
+            ->get();
+
+        $activeUsers = User::where('updated_at', '>=', now()->subDays(30))->count();
+        $inactiveUsers = User::where('updated_at', '<', now()->subDays(30))->orWhereNull('email_verified_at')->count();
+
+        $paymentStatusData = DB::table('payments')
+            ->select('status', DB::raw('COUNT(*) as count'))
+            ->groupBy('status')
+            ->get()
+            ->map(function ($item) {
+                $fillColor = match ($item->status) {
+                    'success' => '#10b981',
+                    'pending' => '#f59e0b',
+                    'failed' => '#ef4444',
+                    default => '#94a3b8',
+                };
+
+                return [
+                    'status' => $item->status,
+                    'count' => $item->count,
+                    'fill' => $fillColor,
+                ];
+            });
+
+        $contactCount = Contact::count();
+        $organizationCount = Organization::count();
+        $userCount = User::count();
+        $totalPayment = Payment::sum('amount');
+
+        return Inertia::render('dashboard', [
+            'contact_count' => $contactCount,
+            'organization_count' => $organizationCount,
+            'user_count' => $userCount,
+            'total_payment' => $totalPayment,
+            'organization_created_info' => $organizationCreatedLastSixMonths,
+            'organizations_by_size' => $organizationsBySize,
+            'user_activity' => [
+                [
+                    'month' => date('F Y'),
+                    'active' => $activeUsers,
+                    'inactive' => $inactiveUsers,
+                ],
+            ],
+            'payment_status_data' => $paymentStatusData,
+        ]);
     })->name('dashboard');
 
     Route::group(['prefix' => 'contacts'], function () {
