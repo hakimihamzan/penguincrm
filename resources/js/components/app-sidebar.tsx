@@ -32,7 +32,6 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-     
     const [isAudioLoading, setIsAudioLoading] = React.useState(false);
 
     return (
