@@ -41,6 +41,7 @@ class OrganizationFactory extends Factory
             'employee_count' => fake()->numberBetween(1, 10000),
             'founded_date' => fake()->dateTimeBetween('-30 years', 'now'),
             'is_active' => fake()->boolean(80), // 80% chance to be true
+            'created_at' => fake()->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }
