@@ -1,4 +1,3 @@
-import AppLogoIcon from '@/components/app-logo-icon';
 import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
 
@@ -15,7 +14,7 @@ export default function AuthSimpleLayout({ children, title, description }: Props
                 <div className="flex flex-col gap-8">
                     <div className="flex flex-col items-center gap-4">
                         <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium">
-                            <h1 className="text-2xl border-b my-3">Penguin CRM</h1>
+                            <h1 className="my-3 border-b text-2xl">Penguin CRM</h1>
                             <span className="sr-only">{title}</span>
                         </Link>
 

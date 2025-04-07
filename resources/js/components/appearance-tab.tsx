@@ -13,13 +13,7 @@ export default function AppearanceTab({ className = '', ...props }: HTMLAttribut
     ];
 
     return (
-        <div
-            className={cn(
-                'flex flex-row justify-between rounded bg-neutral-100 p-1 dark:bg-neutral-800',
-                className
-            )}
-            {...props}
-        >
+        <div className={cn('flex flex-row justify-between rounded bg-neutral-100 p-1 dark:bg-neutral-800', className)} {...props}>
             {tabs.map(({ value, icon: Icon, label }) => (
                 <button
                     key={value}
