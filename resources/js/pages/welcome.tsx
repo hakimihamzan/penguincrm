@@ -46,7 +46,7 @@ export default function Welcome() {
                 </header>
 
                 {/* Hero Section */}
-                <main className="flex flex-1 flex-col items-center justify-center px-6">
+                <main className="flex flex-1 flex-col items-center justify-center p-6">
                     <div className="flex max-w-3xl flex-col items-center text-center">
                         <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl md:text-6xl dark:text-white">
                             Customer management,
