@@ -23,8 +23,8 @@ export default function AuthSimpleLayout({ children, title, description }: Props
                             <p className="text-muted-foreground text-center text-sm">{description}</p>
                         </div>
                         <div className="text-muted-foreground">
-                            <span className='block'>test@email.com</span>
-                            <span className='block'>password</span>
+                            <span className="block">test@email.com</span>
+                            <span className="block">password</span>
                         </div>
                     </div>
                     {children}
