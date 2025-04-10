@@ -20,19 +20,26 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        $organizationCreatedLastSixMonths = Organization::selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
-            ->where('created_at', '>=', now()->subMonths(6))
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get()
-            ->map(function ($item) {
-                $date = Carbon::createFromFormat('Y-m', $item->month);
+        $sixMonthsAgo = now()->subMonths(6);
+
+        $organizations = Organization::where('created_at', '>=', $sixMonthsAgo)
+            ->get(['created_at']);
+
+        $organizationsByMonth = $organizations->groupBy(function ($item) {
+            return $item->created_at->format('Y-m');
+        });
+
+        $organizationCreatedLastSixMonths = collect($organizationsByMonth)
+            ->map(function ($items, $yearMonth) {
+                $date = Carbon::createFromFormat('Y-m', $yearMonth);
 
                 return [
                     'month' => $date->format('F'),
-                    'desktop' => $item->count,
+                    'desktop' => $items->count(),
                 ];
-            });
+            })
+            ->sortBy('month')
+            ->values();
 
         $organizationsBySize = DB::table('organizations')
             ->select(
@@ -46,8 +53,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 DB::raw('count(*) as value')
             )
             ->groupBy('category')
-            ->orderBy(DB::raw('FIELD(category, "micro", "small", "medium", "large", "enterprise")'))
             ->get();
+
+        // Then sort the collection in PHP instead of SQL
+        $organizationsBySize = $organizationsBySize->sortBy(function ($item) {
+            $order = [
+                'micro' => 1,
+                'small' => 2,
+                'medium' => 3,
+                'large' => 4,
+                'enterprise' => 5,
+            ];
+
+            return $order[$item->category] ?? 999;
+        })->values();
 
         $activeUsers = User::where('updated_at', '>=', now()->subDays(30))->count();
         $inactiveUsers = User::where('updated_at', '<', now()->subDays(30))->orWhereNull('email_verified_at')->count();
